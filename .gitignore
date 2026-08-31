@@ -1,2 +1,14 @@
 .DS_Store
 tomorrow*
+node_modules
+dist
+dist-ssr
+*.local
+.env*
+.tanstack
+.wrangler
+.output
+.vinxi
+__unconfig*
+todos.json
+*.tsbuildinfo
