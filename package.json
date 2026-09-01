@@ -22,6 +22,8 @@
     "@tanstack/react-router-ssr-query": "latest",
     "@tanstack/react-start": "latest",
     "@tanstack/router-plugin": "latest",
+    "@workos-inc/node": "^10.12.0",
+    "@workos/authkit-tanstack-react-start": "^0.11.0",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "lucide-react": "^1.37.0",

@@ -6,18 +6,24 @@ export function SettingsPage({
   nightmode,
   colorblind,
   dayOffset,
+  accountEmail,
+  accountEnabled,
   onHardMode,
   onNightmode,
   onColorblind,
+  onEsci,
 }: {
   hardMode: boolean
   hardModeLocked: boolean
   nightmode: boolean
   colorblind: boolean
   dayOffset: number
+  accountEmail: string | null
+  accountEnabled: boolean
   onHardMode: (checked: boolean) => void
   onNightmode: (checked: boolean) => void
   onColorblind: (checked: boolean) => void
+  onEsci: () => void
 }) {
   return (
     <div className="parle-settings">
@@ -39,6 +45,28 @@ export function SettingsPage({
           <Switch checked={colorblind} onChange={onColorblind} />
         </SettingRow>
       </section>
+      {accountEnabled ? (
+        <section>
+          <SettingRow
+            title="Account"
+            description={accountEmail ?? undefined}
+          >
+            {accountEmail ? (
+              <button
+                type="button"
+                className="parle-account-action"
+                onClick={onEsci}
+              >
+                Esci
+              </button>
+            ) : (
+              <a className="parle-account-action" href="/api/auth/sign-in">
+                Accedi
+              </a>
+            )}
+          </SettingRow>
+        </section>
+      ) : null}
       <section>
         <div className="parle-setting">
           <div className="parle-setting-title">Feedback</div>

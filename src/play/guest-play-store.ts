@@ -37,11 +37,15 @@ export function createGuestPlayStore({
     storage.setItem(STORAGE_KEY, JSON.stringify([...rest, play]))
   }
 
+  function replaceAll(plays: Play[]): void {
+    storage.setItem(STORAGE_KEY, JSON.stringify(plays))
+  }
+
   function hasEverPlayed(): boolean {
     return load().some((play) => play.guesses.length > 0)
   }
 
-  return { load, playForGameDay, savePlay, hasEverPlayed }
+  return { load, playForGameDay, savePlay, replaceAll, hasEverPlayed }
 }
 
 function isPlay(value: unknown): value is Play {

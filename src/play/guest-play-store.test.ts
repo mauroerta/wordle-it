@@ -31,4 +31,21 @@ describe("createGuestPlayStore", () => {
     const store = createGuestPlayStore({ storage: memoryStore() })
     expect(store.hasEverPlayed()).toBe(false)
   })
+
+  test("replaceAll writes the given Plays", () => {
+    const store = createGuestPlayStore({ storage: memoryStore() })
+    const play = submitGuess({
+      play: createEmptyPlay({
+        gameDay: "2026-08-30",
+        puzzle: "porta",
+        hardMode: false,
+      }),
+      guess: "porta",
+    })
+    store.replaceAll([play])
+    expect(store.load()).toEqual([play])
+    store.replaceAll([])
+    expect(store.load()).toEqual([])
+    expect(store.hasEverPlayed()).toBe(false)
+  })
 })

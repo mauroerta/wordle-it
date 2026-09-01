@@ -4,11 +4,23 @@ import {
   Scripts,
   createRootRoute,
 } from "@tanstack/react-router"
+import { getAuth } from "@workos/authkit-tanstack-react-start"
+import { workosConfigured } from "../auth/workos-configured"
 
 import appCss from "../styles.css?url"
 import parleCss from "../parle/parle.css?url"
 
 export const Route = createRootRoute({
+  loader: async () => {
+    if (!workosConfigured()) {
+      return { accountEmail: null as string | null, accountEnabled: false }
+    }
+    const auth = await getAuth()
+    return {
+      accountEmail: auth.user?.email ?? null,
+      accountEnabled: true,
+    }
+  },
   head: () => ({
     meta: [
       { charSet: "utf-8" },

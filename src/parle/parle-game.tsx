@@ -11,6 +11,7 @@ import {
   submitGuess,
 } from "../play/play"
 import { createGuestPlayStore } from "../play/guest-play-store"
+import { playsAfterPlayerChange } from "../play/player-change"
 import { puzzleForGameDayIndex } from "../puzzle/word-list"
 import { shareText } from "../share/share"
 import { statisticsFromPlays } from "../statistics/statistics"
@@ -40,7 +41,13 @@ type Toast = {
   system?: boolean
 }
 
-export function ParleGame() {
+export function ParleGame({
+  accountEmail,
+  accountEnabled,
+}: {
+  accountEmail: string | null
+  accountEnabled: boolean
+}) {
   const store = useMemo(
     () => createGuestPlayStore({ storage: window.localStorage }),
     []
@@ -247,6 +254,11 @@ export function ParleGame() {
     }
   }
 
+  function onEsci() {
+    store.replaceAll(playsAfterPlayerChange({ kind: "sign_out" }))
+    window.location.href = "/api/auth/sign-out"
+  }
+
   async function onShare() {
     const text = shareText({
       evaluations: play.evaluations,
@@ -257,12 +269,19 @@ export function ParleGame() {
       nightmode: theme.nightmode,
       colorblind: theme.colorblind,
     })
-    try {
-      if (window.matchMedia("(pointer: coarse)").matches && navigator.share) {
-        await navigator.share({ text })
-      } else {
-        copyShareText(text)
+    const payload = { text }
+    if (shouldUseNativeShare(payload)) {
+      try {
+        await navigator.share(payload)
+        return
+      } catch (error) {
+        if (error instanceof Error && error.name === "AbortError") {
+          return
+        }
       }
+    }
+    try {
+      copyShareText(text)
       addToast({ text: "Risultati copiati", duration: 2000, system: true })
     } catch {
       addToast({
@@ -346,9 +365,12 @@ export function ParleGame() {
             nightmode={theme.nightmode}
             colorblind={theme.colorblind}
             dayOffset={dayOffset}
+            accountEmail={accountEmail}
+            accountEnabled={accountEnabled}
             onHardMode={onHardMode}
             onNightmode={(nightmode) => setTheme({ ...theme, nightmode })}
             onColorblind={(colorblind) => setTheme({ ...theme, colorblind })}
+            onEsci={onEsci}
           />
         </PageOverlay>
       ) : null}
@@ -393,6 +415,20 @@ function ToastView({ toast }: { toast: Toast }) {
 function lastHardMode(plays: { hardMode: boolean }[]): boolean {
   const last = plays.at(-1)
   return last?.hardMode ?? false
+}
+
+function shouldUseNativeShare(payload: ShareData): boolean {
+  if (typeof navigator.share !== "function") {
+    return false
+  }
+  if (typeof navigator.canShare === "function" && !navigator.canShare(payload)) {
+    return false
+  }
+  if (window.matchMedia("(pointer: coarse)").matches) {
+    return true
+  }
+  const ua = navigator.userAgent
+  return /safari/i.test(ua) && !/chrome|chromium|crios|android|edg/i.test(ua)
 }
 
 function copyShareText(text: string) {
