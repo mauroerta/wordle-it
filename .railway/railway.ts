@@ -12,8 +12,8 @@ export default defineRailway(() => {
 
   const web = service("parle", {
     source: github("mauroerta/wordle-it", { branch: "main" }),
-    build: "npm run build",
-    start: "npm start",
+    build: "pnpm build",
+    start: "pnpm start",
     replicas: { "europe-west4-drams3a": 1 },
     env: {
       DATABASE_URL: db.env.DATABASE_URL,
