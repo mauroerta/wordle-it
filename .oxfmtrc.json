@@ -17,7 +17,6 @@
     "yarn.lock",
     "src/routeTree.gen.ts",
     "src/puzzle/*.json",
-    "legacy/**",
     ".agents/**",
     ".claude/**",
     "drizzle/meta/**"

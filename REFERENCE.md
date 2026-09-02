@@ -7,7 +7,7 @@ That URL is the source of truth for how this game must **look**. If this repo, a
 ## Constraints (current)
 
 - Match the live game visually: layout, colors, typography, spacing, chrome, copy, keyboard, board, modals, toasts, stats, share, dark mode, colorblind mode.
-- Implementation may be rewritten (see `MODERNIZATION.md` stack). Players should not be able to tell from looking.
+- Implementation follows the stack in `MODERNIZATION.md`. Players should not be able to tell from looking.
 - When checking look, open the URL above. Do not rely on this repo’s files alone.
 
 ### STATISTICHE (must match)
@@ -33,12 +33,12 @@ These must **not** copy the live site. See `MODERNIZATION.md`.
 - New origin: Players start from zero Plays. Old live-site counters are not imported.
 - Tema nero and colori ad alto contrasto stay on the device, not on the Account. Hard mode stays as in the live game (tied to the Play, locked after the first guess of the day).
 - Same Puzzle sequence as the live Parle (same lists, First Game Day 3 January 2022). May differ from live on ora-legale edges because we fix Game Day math.
-- Custom domain, Railway deploy, and WorkOS production keys wait until the app works locally. Guest play must work with no cloud accounts.
+- Guest play must work with no cloud accounts.
 
 ## What this does not freeze
 
 Tooling, analytics ownership, docs, and the behavior exceptions above.
 
-## Later (when we rewrite)
+## Visual acceptance
 
-Use the live URL as the **visual** acceptance baseline. After any rewrite, the product must still look like https://pietroppeter.github.io/wordle-it/ unless a Change item in `MODERNIZATION.md` says otherwise. Do not copy its timezone / day-index / streak bugs.
+Use the live URL as the **visual** acceptance baseline. The product must still look like https://pietroppeter.github.io/wordle-it/ unless a Change item in `MODERNIZATION.md` says otherwise. Do not copy its timezone / day-index / streak bugs.

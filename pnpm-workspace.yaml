@@ -1,0 +1,4 @@
+allowBuilds:
+  esbuild: false
+# pnpm 11 defaults this to 1440 (24h). Fresh transitives then fail install.
+minimumReleaseAge: 0

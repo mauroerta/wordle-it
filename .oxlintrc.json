@@ -14,8 +14,7 @@
     "src/routeTree.gen.ts",
     "src/puzzle/*.json",
     "src/components/ui/**",
-    "src/lib/utils.ts",
-    "legacy/**"
+    "src/lib/utils.ts"
   ],
   "overrides": [
     {

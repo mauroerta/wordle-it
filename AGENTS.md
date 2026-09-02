@@ -29,10 +29,9 @@ TanStack Start, Drizzle, WorkOS: check current docs. Do not trust training data.
 
 ## Stack
 
-TanStack Start, React, Tailwind, shadcn, Drizzle, Postgres. WorkOS AuthKit
-and Railway Europe later. First milestone: local Guest play.
-
-The original Nim/static site lives in `legacy/`. Do not serve it.
+TanStack Start, React, Tailwind, shadcn, Drizzle, Postgres, WorkOS AuthKit.
+Railway Europe: `staging` and `production`, both on `main`. Details:
+[`docs/adr/0003-host-on-railway.md`](docs/adr/0003-host-on-railway.md).
 
 ## Commands
 

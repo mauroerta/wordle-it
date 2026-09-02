@@ -5,10 +5,10 @@ import {
   preserve,
   project,
   service,
-} from "railway/iac";
+} from "railway/iac"
 
 export default defineRailway(() => {
-  const db = postgres("postgres");
+  const db = postgres("postgres")
 
   const web = service("parle", {
     source: github("mauroerta/wordle-it", { branch: "main" }),
@@ -22,10 +22,10 @@ export default defineRailway(() => {
       WORKOS_COOKIE_PASSWORD: preserve(),
       WORKOS_REDIRECT_URI: preserve(),
     },
-  });
+  })
 
   return project("parle", {
     resources: [db, web],
     environments: ["staging", "production"],
-  });
-});
+  })
+})
