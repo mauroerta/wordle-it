@@ -30,6 +30,9 @@ Living capture for this fork of [Par🇮🇹le](https://github.com/pietroppeter/
   - Locale: Italian
 - **[decided]** [Railway](https://railway.app/) hosts the app and Postgres (not GitHub Pages, not Vercel + Neon)
   - Region: Europe
+  - Railway graph (app, Postgres, vars, region) lives in [`.railway/railway.ts`](https://docs.railway.com/infrastructure-as-code) (TypeScript IaC). Not `railway.json` / `railway.toml` (deprecated), not Terraform, not the dashboard as source of truth.
+  - Three layers stay separate: Compose for local Postgres, Drizzle for schema, `railway.ts` for the Railway project. `railway config apply` changes the graph; git push deploys the app.
+  - Write and apply the file when a Railway project exists to `railway link`. Secrets (WorkOS) stay on Railway via `preserve()`. The file lists the whole environment — omit means delete.
   - Custom domain later. First milestone: working app locally (Guest play, no Railway/WorkOS accounts required). Plug in Railway + WorkOS when those accounts exist.
 
 ## Current snapshot (2026-08-30)

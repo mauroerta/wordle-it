@@ -1,4 +1,4 @@
-import type { Play } from "./play"
+import type { Play } from "../play/play"
 
 export type PlayerChange =
   | { kind: "create_account"; guestPlays: Play[] }
@@ -13,4 +13,19 @@ export function playsAfterPlayerChange(change: PlayerChange): Play[] {
     return change.accountPlays
   }
   return []
+}
+
+export function playerChangeForAuth({
+  accountIsNew,
+  guestPlays,
+  accountPlays,
+}: {
+  accountIsNew: boolean
+  guestPlays: Play[]
+  accountPlays: Play[]
+}): PlayerChange {
+  if (accountIsNew) {
+    return { kind: "create_account", guestPlays }
+  }
+  return { kind: "sign_in", accountPlays }
 }

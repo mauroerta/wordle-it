@@ -1,4 +1,5 @@
-import type { Play } from "./play"
+import { isPlay } from "../play/play"
+import type { Play } from "../play/play"
 
 export type KeyValueStore = {
   getItem: (key: string) => string | null
@@ -7,11 +8,7 @@ export type KeyValueStore = {
 
 const STORAGE_KEY = "parle.plays"
 
-export function createGuestPlayStore({
-  storage,
-}: {
-  storage: KeyValueStore
-}) {
+export function createDevicePlays({ storage }: { storage: KeyValueStore }) {
   function load(): Play[] {
     const raw = storage.getItem(STORAGE_KEY)
     if (!raw) {
@@ -46,21 +43,4 @@ export function createGuestPlayStore({
   }
 
   return { load, playForGameDay, savePlay, replaceAll, hasEverPlayed }
-}
-
-function isPlay(value: unknown): value is Play {
-  if (!value || typeof value !== "object") {
-    return false
-  }
-  const play = value as Partial<Play>
-  return (
-    typeof play.gameDay === "string" &&
-    typeof play.puzzle === "string" &&
-    Array.isArray(play.guesses) &&
-    Array.isArray(play.evaluations) &&
-    (play.status === "in_progress" ||
-      play.status === "won" ||
-      play.status === "lost") &&
-    typeof play.hardMode === "boolean"
-  )
 }

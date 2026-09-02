@@ -1,6 +1,6 @@
 import { describe, expect, test } from "vitest"
-import { createEmptyPlay, submitGuess } from "./play"
-import { playsAfterPlayerChange } from "./player-change"
+import { createEmptyPlay, submitGuess } from "../play/play"
+import { playerChangeForAuth, playsAfterPlayerChange } from "./player-change"
 
 function guestPlay() {
   return submitGuess({
@@ -51,7 +51,31 @@ describe("playsAfterPlayerChange", () => {
     ).toEqual([])
   })
 
-  test("signing out leaves no Plays on the device", () => {
+  test("signing out leaves no Plays on this device", () => {
     expect(playsAfterPlayerChange({ kind: "sign_out" })).toEqual([])
+  })
+})
+
+describe("playerChangeForAuth", () => {
+  test("a new Account keeps the Guest Plays", () => {
+    const guestPlays = [guestPlay()]
+    expect(
+      playerChangeForAuth({
+        accountIsNew: true,
+        guestPlays,
+        accountPlays: [],
+      })
+    ).toEqual({ kind: "create_account", guestPlays })
+  })
+
+  test("a returning Account uses the Account Plays", () => {
+    const accountPlays = [accountPlay()]
+    expect(
+      playerChangeForAuth({
+        accountIsNew: false,
+        guestPlays: [guestPlay()],
+        accountPlays,
+      })
+    ).toEqual({ kind: "sign_in", accountPlays })
   })
 })

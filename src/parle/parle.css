@@ -588,7 +588,8 @@ button.parle-account-action {
 
 .parle-graph-row {
   width: 100%;
-  height: 20px;
+  /* 20px bar + 4px gap; Tailwind border-box would otherwise shrink the bar. */
+  height: 24px;
   display: flex;
   align-items: center;
   padding-bottom: 4px;
@@ -598,7 +599,7 @@ button.parle-account-action {
 
 .parle-graph {
   width: 100%;
-  height: 100%;
+  height: 20px;
   padding-left: 4px;
 }
 
@@ -608,6 +609,7 @@ button.parle-account-action {
   background-color: var(--color-absent);
   display: flex;
   justify-content: center;
+  align-items: center;
 }
 
 .parle-graph-bar-highlight {
@@ -622,6 +624,10 @@ button.parle-account-action {
 .parle-graph-count {
   font-weight: 700;
   color: var(--tile-text-color);
+  line-height: 1;
+  height: 100%;
+  display: flex;
+  align-items: center;
 }
 
 .parle-stats-footer {

@@ -27,6 +27,9 @@ enough to need no review of its own.
 
 Match the live Parle look. Do not invent a new visual language for the board.
 
+UI copy is Italian. Identifiers, file names, and comments in `src/` are
+English. Settings show Accedi / Esci; code does not.
+
 ## Shape of the code
 
 Pass an options object at two or more parameters. One param stays positional.

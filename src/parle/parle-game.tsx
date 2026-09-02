@@ -1,8 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from "react"
-import {
-  calendarDateInRome,
-  gameDayIndex,
-} from "../game-day/game-day"
+import { calendarDateInRome, gameDayIndex } from "../game-day/game-day"
 import { letterEvaluations } from "../guess/evaluate-guess"
 import {
   createEmptyPlay,
@@ -10,8 +7,7 @@ import {
   setHardMode,
   submitGuess,
 } from "../play/play"
-import { createGuestPlayStore } from "../play/guest-play-store"
-import { playsAfterPlayerChange } from "../play/player-change"
+import { createPlayer, createServerAccount } from "../player/player"
 import { puzzleForGameDayIndex } from "../puzzle/word-list"
 import { shareText } from "../share/share"
 import { statisticsFromPlays } from "../statistics/statistics"
@@ -48,9 +44,13 @@ export function ParleGame({
   accountEmail: string | null
   accountEnabled: boolean
 }) {
-  const store = useMemo(
-    () => createGuestPlayStore({ storage: window.localStorage }),
-    []
+  const player = useMemo(
+    () =>
+      createPlayer({
+        storage: window.localStorage,
+        account: accountEmail ? createServerAccount() : undefined,
+      }),
+    [accountEmail]
   )
   const themeStore = useMemo(
     () =>
@@ -65,7 +65,7 @@ export function ParleGame({
   const gameDay = calendarDateInRome(now)
   const dayOffset = gameDayIndex(now)
   const puzzle = puzzleForGameDayIndex(dayOffset)
-  const restored = store.playForGameDay(gameDay)
+  const restored = player.playForGameDay(gameDay)
 
   const [play, setPlay] = useState(
     () =>
@@ -73,7 +73,7 @@ export function ParleGame({
       createEmptyPlay({
         gameDay,
         puzzle,
-        hardMode: lastHardMode(store.load()),
+        hardMode: lastHardMode(player.load()),
       })
   )
   const [draft, setDraft] = useState("")
@@ -83,7 +83,7 @@ export function ParleGame({
     () => play.status !== "in_progress"
   )
   const [showHelpModal, setShowHelpModal] = useState(
-    () => !store.hasEverPlayed()
+    () => !player.hasEverPlayed()
   )
   const [canInput, setCanInput] = useState(() => play.status === "in_progress")
   const [invalid, setInvalid] = useState(false)
@@ -106,12 +106,12 @@ export function ParleGame({
   }, [theme, themeStore])
 
   useEffect(() => {
-    if (!store.hasEverPlayed()) {
+    if (!player.hasEverPlayed()) {
       const id = window.setTimeout(() => setShowHelpModal(true), 100)
       return () => window.clearTimeout(id)
     }
     return undefined
-  }, [store])
+  }, [player])
 
   function addToast(toast: Omit<Toast, "id">) {
     const id = toastSeq.current + 1
@@ -123,6 +123,10 @@ export function ParleGame({
     window.setTimeout(() => {
       setToasts((current) => current.filter((item) => item.id !== id))
     }, toast.duration + 300)
+  }
+
+  function persist(next: typeof play) {
+    void player.savePlay(next)
   }
 
   function reject(message: string) {
@@ -155,7 +159,7 @@ export function ParleGame({
       }
       const next = submitGuess({ play: current, guess })
       setPlay(next)
-      store.savePlay(next)
+      persist(next)
       draftRef.current = ""
       setDraft("")
       canInputRef.current = false
@@ -201,7 +205,10 @@ export function ParleGame({
     }
     const lastTileDelayMs = 300 * 4
     const flipMs = 250 + 250
-    const id = window.setTimeout(() => onRevealDone(), lastTileDelayMs + flipMs + 100)
+    const id = window.setTimeout(
+      () => onRevealDone(),
+      lastTileDelayMs + flipMs + 100
+    )
     return () => window.clearTimeout(id)
   }, [revealRow])
 
@@ -250,12 +257,12 @@ export function ParleGame({
     const next = setHardMode({ play, hardMode: checked })
     setPlay(next)
     if (next.guesses.length > 0 || checked) {
-      store.savePlay(next)
+      persist(next)
     }
   }
 
   function onEsci() {
-    store.replaceAll(playsAfterPlayerChange({ kind: "sign_out" }))
+    player.onSignOut()
     window.location.href = "/api/auth/sign-out"
   }
 
@@ -270,7 +277,7 @@ export function ParleGame({
       colorblind: theme.colorblind,
     })
     const payload = { text }
-    if (shouldUseNativeShare(payload)) {
+    if (typeof navigator.share === "function") {
       try {
         await navigator.share(payload)
         return
@@ -292,7 +299,7 @@ export function ParleGame({
     }
   }
 
-  const stats = statisticsFromPlays({ plays: store.load(), today: gameDay })
+  const stats = statisticsFromPlays({ plays: player.load(), today: gameDay })
   const revealedCount = revealRow === null ? play.guesses.length : revealRow
   const marks = letterEvaluations({
     guesses: play.guesses.slice(0, revealedCount),
@@ -415,20 +422,6 @@ function ToastView({ toast }: { toast: Toast }) {
 function lastHardMode(plays: { hardMode: boolean }[]): boolean {
   const last = plays.at(-1)
   return last?.hardMode ?? false
-}
-
-function shouldUseNativeShare(payload: ShareData): boolean {
-  if (typeof navigator.share !== "function") {
-    return false
-  }
-  if (typeof navigator.canShare === "function" && !navigator.canShare(payload)) {
-    return false
-  }
-  if (window.matchMedia("(pointer: coarse)").matches) {
-    return true
-  }
-  const ua = navigator.userAgent
-  return /safari/i.test(ua) && !/chrome|chromium|crios|android|edg/i.test(ua)
 }
 
 function copyShareText(text: string) {

@@ -1,4 +1,4 @@
-import type { KeyValueStore } from "../play/guest-play-store"
+import type { KeyValueStore } from "../player/device"
 
 const NIGHTMODE_KEY = "parle.nightmode"
 const COLORBLIND_KEY = "parle.colorblind"

@@ -115,3 +115,20 @@ export function setHardMode({
   }
   return { ...play, hardMode }
 }
+
+export function isPlay(value: unknown): value is Play {
+  if (!value || typeof value !== "object") {
+    return false
+  }
+  const play = value as Partial<Play>
+  return (
+    typeof play.gameDay === "string" &&
+    typeof play.puzzle === "string" &&
+    Array.isArray(play.guesses) &&
+    Array.isArray(play.evaluations) &&
+    (play.status === "in_progress" ||
+      play.status === "won" ||
+      play.status === "lost") &&
+    typeof play.hardMode === "boolean"
+  )
+}
