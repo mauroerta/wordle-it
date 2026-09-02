@@ -22,7 +22,6 @@ _Avoid_: solution, word of the day (as a second official name)
 A five-letter word that may be submitted. The allowed-guess list is larger than the Puzzle list.
 _Avoid_: dictionary (as if there were only one list)
 
-
 **Play**:
 A Player’s attempt at one Puzzle: the board, guesses, and whether it is in progress, won, or lost. At most one Play per Player per Game Day. Plays are the source of truth.
 _Avoid_: gameState, session, match, partita, result, score

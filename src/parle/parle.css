@@ -268,7 +268,9 @@ body {
 }
 
 .parle-key.fade {
-  transition: background-color 0.1s ease, color 0.1s ease;
+  transition:
+    background-color 0.1s ease,
+    color 0.1s ease;
 }
 
 .parle-key-wide {

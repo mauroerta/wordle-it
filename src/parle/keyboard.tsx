@@ -19,7 +19,10 @@ export function Keyboard({
     <div
       className="parle-keyboard"
       onMouseDown={(event) => {
-        if (event.target instanceof HTMLElement && event.target.closest("button")) {
+        if (
+          event.target instanceof HTMLElement &&
+          event.target.closest("button")
+        ) {
           event.preventDefault()
         }
       }}

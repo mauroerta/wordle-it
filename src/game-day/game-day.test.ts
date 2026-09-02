@@ -39,9 +39,7 @@ describe("gameDayIndex", () => {
   })
 
   test("anno bisestile counts 29 February", () => {
-    expect(
-      daysBetweenGameDays("2024-02-28", "2024-03-01")
-    ).toBe(2)
+    expect(daysBetweenGameDays("2024-02-28", "2024-03-01")).toBe(2)
   })
 })
 

@@ -20,7 +20,12 @@ export function GameIcon({ name }: { name: IconName }) {
         ? "var(--white)"
         : "var(--color-tone-3)"
   return (
-    <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24">
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      height="24"
+      viewBox="0 0 24 24"
+      width="24"
+    >
       <path fill={fill} d={PATHS[name]} />
     </svg>
   )

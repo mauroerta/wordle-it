@@ -11,7 +11,7 @@ test clearer.
 
 TanStack Start, Drizzle, WorkOS: check current docs. Do not trust training data.
 
-Format follows `.prettierrc` (Start scaffold). Shape of the code follows
+Format follows `.oxfmtrc.json`. Shape of the code follows
 this skill. `src/lib/utils.ts` is the shadcn `cn` helper, not a dumping
 ground. `src/components/ui/` is generated shadcn. Parle board colors are
 the live CSS variables, not shadcn semantic tokens.

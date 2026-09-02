@@ -19,7 +19,15 @@ export function statisticsFromPlays({
 }): Statistics {
   const finished = plays.filter((play) => play.status !== "in_progress")
   const wins = finished.filter((play) => play.status === "won")
-  const guesses = { 1: 0, 2: 0, 3: 0, 4: 0, 5: 0, 6: 0, fail: 0 } as Statistics["guesses"]
+  const guesses = {
+    1: 0,
+    2: 0,
+    3: 0,
+    4: 0,
+    5: 0,
+    6: 0,
+    fail: 0,
+  } as Statistics["guesses"]
 
   for (const play of finished) {
     if (play.status === "lost") {

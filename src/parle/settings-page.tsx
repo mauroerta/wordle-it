@@ -47,10 +47,7 @@ export function SettingsPage({
       </section>
       {accountEnabled ? (
         <section>
-          <SettingRow
-            title="Account"
-            description={accountEmail ?? undefined}
-          >
+          <SettingRow title="Account" description={accountEmail ?? undefined}>
             {accountEmail ? (
               <button
                 type="button"

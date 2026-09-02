@@ -7,8 +7,9 @@ export function evaluateGuess({
   guess: string
   puzzle: string
 }): TileMark[] {
-  const marks: Array<TileMark> = Array.from({ length: puzzle.length }, () =>
-    "absent"
+  const marks: Array<TileMark> = Array.from(
+    { length: puzzle.length },
+    () => "absent"
   )
   const guessOpen = Array.from({ length: guess.length }, () => true)
   const puzzleOpen = Array.from({ length: puzzle.length }, () => true)

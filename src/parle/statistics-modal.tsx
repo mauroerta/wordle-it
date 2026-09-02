@@ -29,7 +29,10 @@ export function StatisticsModal({
       <div className="parle-distribution">
         {([1, 2, 3, 4, 5, 6] as const).map((n) => {
           const count = stats.guesses[n]
-          const width = Math.max(7, Math.round((count / Math.max(maxBar, 1)) * 100))
+          const width = Math.max(
+            7,
+            Math.round((count / Math.max(maxBar, 1)) * 100)
+          )
           return (
             <div className="parle-graph-row" key={n}>
               <div>{n}</div>
@@ -61,7 +64,11 @@ export function StatisticsModal({
           </div>
         </div>
         <div className="parle-share">
-          <button className="parle-share-button" type="button" onClick={onShare}>
+          <button
+            className="parle-share-button"
+            type="button"
+            onClick={onShare}
+          >
             Condividi
             <GameIcon name="share" />
           </button>

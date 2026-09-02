@@ -34,10 +34,7 @@ export function ModalOverlay({
 }) {
   return (
     <div className="parle-modal-overlay" onClick={onClose}>
-      <div
-        className="parle-modal"
-        onClick={(event) => event.stopPropagation()}
-      >
+      <div className="parle-modal" onClick={(event) => event.stopPropagation()}>
         {children}
         <button className="parle-modal-close" type="button" onClick={onClose}>
           <GameIcon name="close" />

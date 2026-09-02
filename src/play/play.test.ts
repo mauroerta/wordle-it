@@ -31,9 +31,9 @@ describe("rejectionForGuess", () => {
 
 describe("submitGuess", () => {
   test("rejects words not in either list", () => {
-    expect(() => submitGuess({ play: playOf("porta"), guess: "zzzzz" })).toThrow(
-      GuessRejectedError
-    )
+    expect(() =>
+      submitGuess({ play: playOf("porta"), guess: "zzzzz" })
+    ).toThrow(GuessRejectedError)
   })
 
   test("wins on the puzzle", () => {

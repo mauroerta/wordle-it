@@ -1,9 +1,5 @@
 import type { ReactNode } from "react"
-import {
-  HeadContent,
-  Scripts,
-  createRootRoute,
-} from "@tanstack/react-router"
+import { HeadContent, Scripts, createRootRoute } from "@tanstack/react-router"
 import { getAuth } from "@workos/authkit-tanstack-react-start"
 import { workosConfigured } from "../auth/workos-configured"
 

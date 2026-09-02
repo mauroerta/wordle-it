@@ -36,5 +36,5 @@ The original Nim/static site lives in `legacy/`. Do not serve it.
 
 ## Commands
 
-See `package.json`. Typical loop: `npm install`, `npm run dev`, `npm run test`,
-`npm run lint`.
+See `package.json`. Typical loop: `pnpm install`, `pnpm run dev`, `pnpm run test`,
+`pnpm run lint`. After edits, `pnpm lint:fix` then `pnpm format`.
