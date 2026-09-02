@@ -26,5 +26,6 @@ export default defineRailway(() => {
 
   return project("parle", {
     resources: [db, web],
+    environments: ["staging", "production"],
   });
 });
