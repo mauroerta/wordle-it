@@ -6,7 +6,7 @@ description: Binding TypeScript conventions for Parle under src/. Use when writi
 # Conventions
 
 Decisions, not suggestions. They apply to `src/` source. Tests, fixtures, and
-build tooling (`scripts/`, `*.config.ts`) may relax them when that makes the
+build tooling (`*.config.ts`) may relax them when that makes the
 test clearer.
 
 TanStack Start, Drizzle, WorkOS: check current docs. Do not trust training data.

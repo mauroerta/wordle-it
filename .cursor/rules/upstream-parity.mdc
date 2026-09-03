@@ -8,6 +8,6 @@ alwaysApply: true
 Canonical look: https://pietroppeter.github.io/wordle-it/
 
 - The game must **look** like that site. Open the URL when verifying appearance.
-- A stack rewrite is in scope (React + TanStack Start + Tailwind + shadcn/ui + Postgres + Drizzle + WorkOS). Do not invent a new visual design for the game itself.
-- Do **not** copy live-site bugs for puzzle day, timezone, DST, leap year, or streaks. Those use Europe/Rome calendar dates.
-- Auth and persisted scores are new product surfaces (not on the live site). See `REFERENCE.md` and `MODERNIZATION.md`.
+- Do not invent a new visual design for the game itself.
+- Game Day, timezone, DST, leap year, and streaks use Europe/Rome calendar dates.
+- Auth and persisted Plays are product surfaces (not on the live site). See `REFERENCE.md`.

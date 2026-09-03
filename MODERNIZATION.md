@@ -1,6 +1,7 @@
-# Modernization backlog
+# Backlog
 
-Living capture for this fork of [Par🇮🇹le](https://github.com/pietroppeter/wordle-it) (Italian Wordle). We add items here while chatting. Nothing is a commitment until it is marked **decided**.
+Living capture for Par🇮🇹le. We add items here while chatting. Nothing is a
+commitment until it is marked **decided**.
 
 ## How we use this file
 
@@ -10,87 +11,68 @@ Living capture for this fork of [Par🇮🇹le](https://github.com/pietroppeter/
 
 ## Constraints
 
-- **[decided]** Visual parity with the live game: https://pietroppeter.github.io/wordle-it/
-- **[decided]** Rewrite the implementation; do not redesign what players see.
-- **[decided]** Timezone / game-day / streak behavior is an exception: fix it, do not copy the live site. Details: [`REFERENCE.md`](./REFERENCE.md)
-- **[decided]** Same Puzzle sequence as live Parle (same lists, First Game Day 3 January 2022). Lists live in `src/puzzle/`. [`docs/adr/0004-same-puzzle-sequence.md`](./docs/adr/0004-same-puzzle-sequence.md)
+Standing product rules, not work items.
+
+- Visual parity with the live game: https://pietroppeter.github.io/wordle-it/.
+  Details: [`REFERENCE.md`](./REFERENCE.md)
+- Game Day, countdown, and Streak use the calendar date in **Europe/Rome**.
+  Do not copy live-site timezone, DST, or leap-year bugs.
+- Same Puzzle sequence as live Parle (same lists, First Game Day 3 January
+  2022). [`docs/adr/0004-same-puzzle-sequence.md`](./docs/adr/0004-same-puzzle-sequence.md)
+- Plays are the source of truth. Guest play works with no Account.
+  [`docs/adr/0001-plays-are-source-of-truth.md`](./docs/adr/0001-plays-are-source-of-truth.md),
+  [`docs/adr/0002-account-wins-on-login.md`](./docs/adr/0002-account-wins-on-login.md)
 
 ## Stack
 
-- **[decided]** React
-- **[decided]** [TanStack Start](https://tanstack.com/start) as the framework
-- **[decided]** Tailwind CSS for styling (used to reproduce the existing look, not a new aesthetic)
-- **[decided]** [shadcn/ui](https://ui.shadcn.com/) for base components
-- **[decided]** PostgreSQL for data (not Convex)
-- **[decided]** [Drizzle](https://orm.drizzle.team/) as the ORM
-- **[decided]** [WorkOS AuthKit](https://workos.com/docs/sdks/authkit-tanstack-start) for authentication (`@workos/authkit-tanstack-react-start`)
-  - Hosted AuthKit UI (not a custom login form)
-  - Email magic link + Google
-  - No passwords. Apple later if we wrap as an iOS app.
-  - Locale: Italian
-- **[decided]** [Railway](https://railway.app/) hosts the app and Postgres (not GitHub Pages, not Vercel + Neon)
-  - Region: Europe
-  - Railway graph (app, Postgres, vars, region) lives in [`.railway/railway.ts`](https://docs.railway.com/infrastructure-as-code) (TypeScript IaC). Not `railway.json` / `railway.toml` (deprecated), not Terraform, not the dashboard as source of truth.
-  - Three layers stay separate: Compose for local Postgres, Drizzle for schema, `railway.ts` for the Railway project. `railway config apply` changes the graph.
-  - Environments: `staging` and `production`, both on `main`. Push deploys staging. Production is a manual deploy after staging is good. Separate Postgres per environment.
-  - `railway config apply` updates the live graph. Secrets (WorkOS, including `WORKOS_REDIRECT_URI`) stay on Railway via `preserve()`. The file lists the whole environment — omit means delete.
-  - Custom domain later.
+React, [TanStack Start](https://tanstack.com/start), Tailwind,
+[shadcn/ui](https://ui.shadcn.com/), PostgreSQL, [Drizzle](https://orm.drizzle.team/),
+[WorkOS AuthKit](https://workos.com/docs/sdks/authkit-tanstack-start)
+(`@workos/authkit-tanstack-react-start`), [Railway](https://railway.app/) Europe.
 
-## Current snapshot (2026-09-02)
+AuthKit is the hosted UI (not a custom login form): email magic link + Google,
+Italian locale, no passwords. Apple later if we wrap as an iOS app.
 
-- Fork of `pietroppeter/wordle-it`, hosted originally at https://pietroppeter.github.io/wordle-it/
-- This clone: `mauroerta/wordle-it`
-- Rewrite at the repo root (TanStack Start + React). Puzzle and allowed-guess lists live in `src/puzzle/`.
-- Guest play works locally (`pnpm run dev`, port 3000) and on Railway with no Account. Accedi stores Account Plays in Postgres.
-- Railway: [staging](https://parle-staging.up.railway.app/) and [production](https://parle-production-93f3.up.railway.app/). GitHub autodeploy is not connected yet; until it is, promote with `railway redeploy --from-source --environment staging` (then production, by hand).
-- Game Day is the calendar date in Europe/Rome. Statistics are computed from Plays.
+Railway graph lives in [`.railway/railway.ts`](https://docs.railway.com/infrastructure-as-code).
+Compose is local Postgres. Drizzle is schema. `railway config apply` is the graph.
+Environments: `staging` and `production`, both on `main`. Push deploys staging.
+Production is a manual deploy after staging is good. Separate Postgres per
+environment. Secrets (WorkOS, including `WORKOS_REDIRECT_URI`) stay on Railway
+via `preserve()`. [`docs/adr/0003-host-on-railway.md`](./docs/adr/0003-host-on-railway.md)
+
+## Current snapshot (2026-09-03)
+
+- Rewrite is live. Guest play works locally (`pnpm run dev`, port 3000) and on
+  Railway with no Account. Accedi stores Account Plays in Postgres.
+- Railway: [staging](https://parle-staging.up.railway.app/) and
+  [production](https://parle-production-93f3.up.railway.app/).
+- GitHub autodeploy is not connected yet. Until it is, promote with
+  `railway redeploy --from-source --environment staging` (then production, by
+  hand).
 
 ## Do
 
-- **[decided]** Persist Plays, not counters. Today the live game stores only aggregate Statistics plus today’s board; a new browser wipes everything. An Account owns Plays in Postgres (Drizzle). Statistics and Streak are always computed from Plays.
-  - Identity: WorkOS AuthKit, using the official TanStack Start SDK.
-  - Guests can play without logging in. They also store Plays on the device (not Wordle-style counters).
-  - One Play per Player per Game Day — Guest or Account does not change that.
-  - Creating an Account: the Guest becomes that Account; device Plays are kept.
-  - Logging into an existing Account: Account always wins. Guest Plays on the device are replaced, not merged — even if the Account has no Play for today.
-  - Logging out: new Guest with no Plays on that device. Account Plays stay on the server; logging in again restores them.
-  - Two devices, same Account, same Game Day: the stored Play is the only board. Opening loads it; saving overwrites it (last write wins). No live sync. We are not trying to prevent cheating (a Guest tab can always try guesses separately).
-  - New origin: no import from the live Parle `localStorage` counters. Players start with zero Plays (Statistics show 0).
-  - Accedi / Esci live in the existing settings sheet. Header stays help | title | settings.
-  - Tema nero and colori ad alto contrasto stay on the device. Hard mode stays as in the live game (on the Play, locked after the first guess).
-  - Upstream pain this addresses: stats lost on new phone/browser ([#72](https://github.com/pietroppeter/wordle-it/issues/72), [#46](https://github.com/pietroppeter/wordle-it/issues/46), [#59](https://github.com/pietroppeter/wordle-it/issues/59), [#105](https://github.com/pietroppeter/wordle-it/issues/105), [#101](https://github.com/pietroppeter/wordle-it/issues/101)).
-  - Decision records: [`docs/adr/0001-plays-are-source-of-truth.md`](./docs/adr/0001-plays-are-source-of-truth.md), [`docs/adr/0002-account-wins-on-login.md`](./docs/adr/0002-account-wins-on-login.md), [`docs/adr/0003-host-on-railway.md`](./docs/adr/0003-host-on-railway.md), [`docs/adr/0004-same-puzzle-sequence.md`](./docs/adr/0004-same-puzzle-sequence.md)
+<!-- example: - [inbox] … -->
 
 ## Change
-
-Product, branding, or behavior that should be different from upstream.
 
 <!-- example: - [inbox] … -->
 
 ## Fix
 
-- **[decided]** Game day is always the calendar date in **Italy (`Europe/Rome`)**, not the player’s local midnight.
-  - If you are outside Italy and it is already past midnight locally, but not yet midnight in Italy, you must still be on Italy’s current puzzle.
-  - Opening the game after local midnight must not jump to “tomorrow’s” Italian word, and must not break the streak the following day.
-  - Same root bug on **anno bisestile** (leap year) and **ora legale** (DST): the live site treats a day as `Math.floor(ms / 86400000)` from local midnights. That skips, duplicates, or desyncs a day when the day is not exactly 24 hours, or when the player’s date is not Italy’s date.
-  - Streak is “completed yesterday’s Italy-date puzzle, now playing today’s Italy-date puzzle.”
-  - Everyone worldwide should see the same word at the same moment (when that date starts in Italy).
-  - Upstream (open unless noted): [#116](https://github.com/pietroppeter/wordle-it/issues/116), [#114](https://github.com/pietroppeter/wordle-it/issues/114), [#99](https://github.com/pietroppeter/wordle-it/issues/99), [#90](https://github.com/pietroppeter/wordle-it/issues/90), [#73](https://github.com/pietroppeter/wordle-it/issues/73), [#57](https://github.com/pietroppeter/wordle-it/issues/57), [#53](https://github.com/pietroppeter/wordle-it/issues/53), [#63](https://github.com/pietroppeter/wordle-it/issues/63), [#42](https://github.com/pietroppeter/wordle-it/issues/42), [#75](https://github.com/pietroppeter/wordle-it/issues/75), [#64](https://github.com/pietroppeter/wordle-it/issues/64), [#111](https://github.com/pietroppeter/wordle-it/issues/111), [#107](https://github.com/pietroppeter/wordle-it/issues/107). Related streak wipe: [#101](https://github.com/pietroppeter/wordle-it/issues/101). Closed location/streak: [#52](https://github.com/pietroppeter/wordle-it/issues/52).
-  - Unmerged PRs (each only half of the fix): [#102](https://github.com/pietroppeter/wordle-it/pull/102) always use Italian timezone (still divides by 86400000); [#108](https://github.com/pietroppeter/wordle-it/pull/108) calendar-day diff for DST (still uses the player’s local date).
+<!-- example: - [inbox] … -->
 
 ## Improve
 
-Quality, DX, architecture, UX polish — not strictly broken, but worth better.
-
-- **[done]** Replace the minified Wordle bundle with the stack above, keeping visual parity.
+<!-- example: - [inbox] … -->
 
 ## Parking lot
 
 Ideas not yet classified. Promote into the sections above when you want them.
 
-- Manifest / social meta still advertise `pietroppeter.github.io/wordle-it`
+- GitHub autodeploy (Railway already declares the GitHub source)
+- Custom domain
 - Random analytics sampling and public Plausible dashboard belong to upstream
-- Upstream also has many dictionary / share issues; not in scope until we pick them up
+- Upstream dictionary / share issues; not in scope until we pick them up
 - Live multi-device sync (TanStack DB) — optional later, not for anti-cheat
 - Convex — **[wont]** (would replace Postgres + Drizzle)
-- Custom domain — later

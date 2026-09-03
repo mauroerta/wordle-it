@@ -11,7 +11,7 @@ works with no cloud accounts.
 - [CONTEXT.md](CONTEXT.md). Words to use. Update when a term is resolved.
 - [REFERENCE.md](REFERENCE.md). How it must look. Open the live URL when
   checking appearance.
-- [MODERNIZATION.md](MODERNIZATION.md). Decided work. Status: inbox →
+- [MODERNIZATION.md](MODERNIZATION.md). Living backlog. Status: inbox →
   decided → doing → done.
 - [docs/adr/](docs/adr/). Why, when the choice is surprising.
 

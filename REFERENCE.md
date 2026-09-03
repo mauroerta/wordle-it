@@ -12,7 +12,7 @@ That URL is the source of truth for how this game must **look**. If this repo, a
 
 ### STATISTICHE (must match)
 
-From the live game (`showStatsModal` / `restoringFromLocalStorage` in `wordle-it.js`):
+From the live game:
 
 - After a win: toast, then the STATISTICHE modal (highlight today’s guess-count bar).
 - After a loss: toast with the solution, then the same modal.
