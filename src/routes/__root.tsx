@@ -7,6 +7,7 @@ import appCss from "../styles.css?url"
 import parleCss from "../parle/parle.css?url"
 
 export const Route = createRootRoute({
+  ssr: true,
   loader: async () => {
     if (!workosConfigured()) {
       return { accountEmail: null as string | null, accountEnabled: false }
