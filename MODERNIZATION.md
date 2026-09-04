@@ -46,9 +46,9 @@ via `preserve()`. [`docs/adr/0003-host-on-railway.md`](./docs/adr/0003-host-on-r
   Railway with no Account. Accedi stores Account Plays in Postgres.
 - Railway: [staging](https://parle-staging.up.railway.app/) and
   [production](https://parole.up.railway.app/).
-- GitHub autodeploy is not connected yet. Until it is, promote with
-  `railway redeploy --from-source --environment staging` (then production, by
-  hand).
+- GitHub autodeploy is not connected yet. Until it is, push `main`, then
+  `pnpm deploy:staging`; when staging looks right, `pnpm deploy:production`.
+  Both pull the latest `main` from GitHub, not the working tree.
 
 ## Do
 

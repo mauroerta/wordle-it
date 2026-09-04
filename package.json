@@ -12,6 +12,8 @@
     "db:migrate": "drizzle-kit migrate",
     "db:push": "drizzle-kit push",
     "db:studio": "drizzle-kit studio",
+    "deploy:staging": "railway redeploy --from-source --service parle --environment staging --yes",
+    "deploy:production": "railway redeploy --from-source --service parle --environment production --yes",
     "lint": "oxlint",
     "lint:fix": "oxlint --fix",
     "format": "oxfmt",
