@@ -36,4 +36,6 @@ Railway Europe: `staging` and `production`, both on `main`. Details:
 ## Commands
 
 See `package.json`. Typical loop: `pnpm install`, `pnpm run dev`, `pnpm run test`,
-`pnpm run lint`. After edits, `pnpm lint:fix` then `pnpm format`.
+`pnpm run lint`. After edits, `pnpm lint:fix` then `pnpm format`. Before a
+push, `pnpm build` and probe `node .output/server/index.mjs`: dev does not
+bundle, and only the Nitro build shows chunking errors.

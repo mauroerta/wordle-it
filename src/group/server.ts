@@ -25,12 +25,6 @@ export async function signedInGroups() {
   }
 }
 
-// Behind Railway's proxy the public host and scheme arrive as x-forwarded-*.
-export async function requestOrigin(): Promise<string> {
-  const { getRequestUrl } = await import("@tanstack/react-start/server")
-  return getRequestUrl({ xForwardedHost: true, xForwardedProto: true }).origin
-}
-
 export function asBoolean(data: unknown, key: string): boolean {
   if (!data || typeof data !== "object" || !(key in data)) {
     throw new GroupError("Richiesta non valida")

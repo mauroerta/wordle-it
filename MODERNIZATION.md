@@ -45,7 +45,7 @@ via `preserve()`. [`docs/adr/0003-host-on-railway.md`](./docs/adr/0003-host-on-r
 - Rewrite is live. Guest play works locally (`pnpm run dev`, port 3000) and on
   Railway with no Account. Accedi stores Account Plays in Postgres.
 - Railway: [staging](https://parle-staging.up.railway.app/) and
-  [production](https://parle-production-93f3.up.railway.app/).
+  [production](https://parole.up.railway.app/).
 - GitHub autodeploy is not connected yet. Until it is, promote with
   `railway redeploy --from-source --environment staging` (then production, by
   hand).

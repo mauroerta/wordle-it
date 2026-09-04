@@ -5,7 +5,7 @@ Italian Wordle. Visual parity with
 Europe/Rome. Plays are the source of truth.
 
 - Staging: https://parle-staging.up.railway.app/
-- Production: https://parle-production-93f3.up.railway.app/
+- Production: https://parole.up.railway.app/
 
 ```bash
 pnpm install
