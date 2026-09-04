@@ -28,7 +28,8 @@ enough to need no review of its own.
 Match the live Parle look. Do not invent a new visual language for the board.
 
 UI copy is Italian. Identifiers, file names, and comments in `src/` are
-English. Settings show Accedi / Esci; code does not.
+English. Settings show Accedi / Esci; code does not. A heading can say
+Oggi; the type is `TodayRow`, never `OggiRow`.
 
 ## Shape of the code
 
@@ -38,13 +39,30 @@ Export factories, not classes. `createX(...)` returns an interface from the
 owning module. Callers depend on the type, not the construction.
 
 Put each type, function, error, schema, and test in the module that owns the
-concept it operates on. Name modules for that concept. Never `shared/`,
-`common/`, `utils/`, or `domain/`. A type two modules need belongs to a third
-named concept they both depend on. Keep the module graph a DAG.
+concept it operates on. Name modules for that concept (`group/`, `player/`,
+`play/`). Never `src/shared/`, `src/common/`, `src/utils/`, or `src/domain/`.
+A type two modules need belongs to a third named concept they both depend on.
+Keep the module graph a DAG.
 
-Group by that same concept when a folder accretes. Split into subfolders named
-for concepts, not layers (`services/`, `helpers/`, `models/`, `components/ui`
-is the shadcn exception).
+Things that change together stay close (Common Closure: gather what changes
+for the same reason; Martin, _Clean Architecture_, ch. 13). The module is
+that gathering. When the module folder accretes, split **inside it** so
+related files are not a flat pile:
+
+```
+src/<module>/
+  schema.ts
+  components/
+  queries/
+  mutations/
+  hooks/
+  <name-that-fits>/
+```
+
+Create only folders that have files. `schema.ts` stays at the module root.
+`components/ui` is the shadcn exception, generated, not a Parle module.
+Do not invent a catch-all `utils/` — name the folder for the work
+(`ranking/`, `invite.ts`). Tests sit next to the file they exercise.
 
 Export only what another file imports. Put exported entry points at the top of
 the file and private helpers below.
@@ -75,4 +93,7 @@ express. One line, immediately above the code it defends.
 ## Tests
 
 Place a test in the module that owns the concept it exercises
-(`foo.ts` → `foo.test.ts`). Hermetic: no network, no Postgres, no WorkOS.
+(`foo.ts` → `foo.test.ts`). Hermetic: no network, no Postgres server, no
+WorkOS. Code that takes a `Db` is tested through its factory (`createGroups`)
+on `createTestDb()` from `src/db/test-db.ts`: PGlite in-process with the real
+migrations. Share one per file, `truncateAll` between tests.

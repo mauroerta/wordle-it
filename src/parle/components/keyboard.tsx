@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react"
-import type { TileMark } from "../guess/evaluate-guess"
+import type { TileMark } from "../../guess/evaluate-guess"
 import { GameIcon } from "./game-icon"
 
 const ROWS = [

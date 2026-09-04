@@ -45,5 +45,31 @@ A Player without an Account. Creating an Account is this Player becoming that Ac
 _Avoid_: anonymous user, unauthenticated user
 
 **Account**:
-The identity a Player can create. It owns that Player’s Plays across devices.
+The identity a Player can create. It owns that Player’s Plays across devices. Its name is the WorkOS full name; without one, the part of the email before `@`; never the full address (Members see it).
 _Avoid_: user, login (as the noun for the person)
+
+### Groups
+
+**Group**:
+A private circle of Accounts. A lens over current Members’ Plays — not a season, not a stored ranking. Not searchable.
+_Avoid_: league, team, clan, friend list, season
+
+**Member**:
+An Account currently in a Group. Any Member may share the Invite.
+_Avoid_: user, participant
+
+**Owner**:
+The Member who created the Group, or the longest-standing remaining Member after the previous Owner left. The Owner kicks, renames, rotates or freezes the Invite, and deletes the Group.
+_Avoid_: admin, moderator
+
+**Invite**:
+The secret link that lets an Account join a Group. One link per Group. Kick does not rotate it; it blocks that Account until the Owner pardons. Rotate is for a leaked link.
+_Avoid_: invite code (as a second official name), referral
+
+**Today’s ranking**:
+Members ordered for one Game Day: wins by fewer attempts, then losses as X, then not played (in progress counts as not played). Ties share a rank. Computed from Plays. Visible without having played today. No emoji grids.
+_Avoid_: leaderboard, scoreboard, Oggi (as the English term)
+
+**Podium**:
+The top five places for one Statistics view (current Streak, max Streak, average attempts with a loss as 7, win percentage, games played, losses). Ties share a place, so a tied fifth shows everyone tied. Fewer than five Members: show everyone. A Member with no finished Play has no average and no losses; they sit last, shown as —.
+_Avoid_: chart (as the name of the ranking), leaderboard

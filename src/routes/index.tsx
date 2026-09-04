@@ -1,15 +1,12 @@
-import { createFileRoute, getRouteApi } from "@tanstack/react-router"
+import { createFileRoute } from "@tanstack/react-router"
 import { ParleGame } from "../parle/parle-game"
 import { createPlayer, createServerAccount } from "../player/player"
 
-const rootRoute = getRouteApi("__root__")
-
+// The board is device state (guest Plays in localStorage), so it stays client-only.
 export const Route = createFileRoute("/")({
   ssr: false,
-  loader: async ({ parentMatchPromise }) => {
-    const parent = await parentMatchPromise
-    const accountEmail = parent.loaderData?.accountEmail
-    if (!accountEmail) {
+  loader: async ({ context }) => {
+    if (!context.accountEmail) {
       return
     }
     const player = createPlayer({
@@ -22,7 +19,7 @@ export const Route = createFileRoute("/")({
 })
 
 function App() {
-  const { accountEmail, accountEnabled } = rootRoute.useLoaderData()
+  const { accountEmail, accountEnabled } = Route.useRouteContext()
   return (
     <ParleGame accountEmail={accountEmail} accountEnabled={accountEnabled} />
   )

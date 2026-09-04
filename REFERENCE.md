@@ -28,6 +28,7 @@ These must **not** copy the live site. See `MODERNIZATION.md`.
 - A game day is a calendar date in Italy, not “exactly 86400000 milliseconds.” That also covers **ora legale** (DST) and **anno bisestile** (leap year).
 - Scores and stats persist on the server for logged-in users (WorkOS + Postgres). The live game keeps them only in `localStorage`.
 - Login / account is a **new surface**. It is not on the live site. Keep the game board and header looking like Parle (help | title | settings). Accedi / Esci live in the existing settings sheet, not a fourth header icon. Auth UI is WorkOS AuthKit hosted (email magic link + Google), in Italian.
+- Groups are a **new surface**. They are not on the live site. Same header (no extra icon). Gruppi lives in Impostazioni. End-of-game STATISTICHE stays as on the live site, plus a small strip under Condividi (name · place · attempts) linking to each Group. Group pages use Parle chrome, type, and colors — not a separate visual language.
 - Guests can play without an Account. They store Plays on the device. Creating an Account keeps those Plays. Logging into an existing Account replaces Guest Plays with the Account’s. Logging out starts a new empty Guest. Statistics are always computed from Plays.
 - Two devices, same Account: the stored Play is the only board (last write wins). No live sync. Cheating is out of scope.
 - New origin: Players start from zero Plays. Old live-site counters are not imported.

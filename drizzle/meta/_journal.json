@@ -8,6 +8,13 @@
       "when": 1788286879561,
       "tag": "0000_odd_polaris",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1788459590301,
+      "tag": "0001_wealthy_speedball",
+      "breakpoints": true
     }
   ]
 }

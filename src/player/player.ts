@@ -52,11 +52,11 @@ export function createPlayer({
 export function createServerAccount(): Account {
   return {
     async takeChange(guestPlays) {
-      const { takePlayerChange } = await import("./account-server")
+      const { takePlayerChange } = await import("./mutations/account")
       return takePlayerChange({ data: { guestPlays } })
     },
     async savePlay(play) {
-      const { saveAccountPlay } = await import("./account-server")
+      const { saveAccountPlay } = await import("./mutations/account")
       await saveAccountPlay({ data: { play } })
     },
   }

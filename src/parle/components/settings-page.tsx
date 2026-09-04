@@ -1,4 +1,5 @@
 import type { ReactNode } from "react"
+import { REPO_URL, X_URL } from "./credits-page"
 
 export function SettingsPage({
   hardMode,
@@ -11,7 +12,7 @@ export function SettingsPage({
   onHardMode,
   onNightmode,
   onColorblind,
-  onEsci,
+  onSignOut,
 }: {
   hardMode: boolean
   hardModeLocked: boolean
@@ -23,7 +24,7 @@ export function SettingsPage({
   onHardMode: (checked: boolean) => void
   onNightmode: (checked: boolean) => void
   onColorblind: (checked: boolean) => void
-  onEsci: () => void
+  onSignOut: () => void
 }) {
   return (
     <div className="parle-settings">
@@ -52,12 +53,33 @@ export function SettingsPage({
               <button
                 type="button"
                 className="parle-account-action"
-                onClick={onEsci}
+                onClick={onSignOut}
               >
                 Esci
               </button>
             ) : (
               <a className="parle-account-action" href="/api/auth/sign-in">
+                Accedi
+              </a>
+            )}
+          </SettingRow>
+          <SettingRow
+            title="Gruppi"
+            description={
+              accountEmail
+                ? undefined
+                : "Accedi per creare o unirti a un gruppo"
+            }
+          >
+            {accountEmail ? (
+              <a className="parle-account-action" href="/groups">
+                Apri
+              </a>
+            ) : (
+              <a
+                className="parle-account-action"
+                href="/api/auth/sign-in?returnPathname=%2Fgroups"
+              >
                 Accedi
               </a>
             )}
@@ -68,23 +90,20 @@ export function SettingsPage({
         <div className="parle-setting">
           <div className="parle-setting-title">Feedback</div>
           <div>
-            <a
-              href="https://github.com/pietroppeter/wordle-it/issues/new"
-              target="_blank"
-              rel="noreferrer"
-            >
-              Github
+            <a href={`${REPO_URL}/issues/new`} target="_blank" rel="noreferrer">
+              GitHub
             </a>
             {" | "}
-            <a
-              href="https://twitter.com/intent/tweet?screen_name=pietroppeter"
-              target="_blank"
-              rel="noreferrer"
-            >
-              Twitter
+            <a href={X_URL} target="_blank" rel="noreferrer">
+              X
             </a>
           </div>
         </div>
+        <SettingRow title="Crediti">
+          <a className="parle-account-action" href="/credits">
+            Apri
+          </a>
+        </SettingRow>
       </section>
       <div className="parle-footnote">
         <div>#{dayOffset}</div>

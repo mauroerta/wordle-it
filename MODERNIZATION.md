@@ -52,7 +52,7 @@ via `preserve()`. [`docs/adr/0003-host-on-railway.md`](./docs/adr/0003-host-on-r
 
 ## Do
 
-<!-- example: - [inbox] … -->
+- [doing] Groups: private Account circles, Today’s ranking, Podiums, Invite, STATISTICHE strip, `/groups`
 
 ## Change
 
@@ -60,11 +60,15 @@ via `preserve()`. [`docs/adr/0003-host-on-railway.md`](./docs/adr/0003-host-on-r
 
 ## Fix
 
-<!-- example: - [inbox] … -->
+- [done] Groups: leave/join in one transaction with the Group row locked; slug collision retried; unplayed Members last in Sconfitte; tied fifth kept on Podiums; email never shown as a name
+- [inbox] Groups: Invite freeze after a rotate (CONTEXT says frozen; store has no freeze yet)
 
 ## Improve
 
-<!-- example: - [inbox] … -->
+- [done] SSR for every route but `/`; auth guard in `_authed` beforeLoad; inline theme boot script. [ADR 0006](docs/adr/0006-ssr-everything-but-the-board.md)
+- [done] Groups: one `Db` type over any Postgres driver; PGlite test DB; `createGroups` tested at its seam; Lens loaded in two queries per request (was N+1)
+- [inbox] Groups CSS out of `parle.css` into its own file
+- [inbox] `parle-game.tsx` share goes through `shareOrCopy`
 
 ## Parking lot
 

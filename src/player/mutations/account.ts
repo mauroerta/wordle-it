@@ -1,15 +1,16 @@
 import { createServerFn } from "@tanstack/react-start"
 import { getAuth } from "@workos/authkit-tanstack-react-start"
-import { isPlay } from "../play/play"
-import type { Play } from "../play/play"
-import { playerChangeForAuth } from "./player-change"
+import { isPlay } from "../../play/play"
+import type { Play } from "../../play/play"
+import { accountNameFromUser } from "../account-name"
+import { playerChangeForAuth } from "../player-change"
 
 export const takePlayerChange = createServerFn({ method: "POST" })
   .validator((data: unknown) => ({ guestPlays: asPlays(data, "guestPlays") }))
   .handler(async ({ data }) => {
-    const { db, accountId } = await signedInDb()
-    const { createAccountPlays, ensureAccount } = await import("./account")
-    const accountIsNew = await ensureAccount({ db, accountId })
+    const { db, accountId, name } = await signedInDb()
+    const { createAccountPlays, ensureAccount } = await import("../account")
+    const accountIsNew = await ensureAccount({ db, accountId, name })
     const store = createAccountPlays({ db, accountId })
     const change = playerChangeForAuth({
       accountIsNew,
@@ -26,7 +27,7 @@ export const saveAccountPlay = createServerFn({ method: "POST" })
   .validator((data: unknown) => ({ play: asPlay(data, "play") }))
   .handler(async ({ data }) => {
     const { db, accountId } = await signedInDb()
-    const { createAccountPlays } = await import("./account")
+    const { createAccountPlays } = await import("../account")
     const store = createAccountPlays({ db, accountId })
     await store.savePlay(data.play)
   })
@@ -36,8 +37,12 @@ async function signedInDb() {
   if (!auth.user) {
     throw new Error("not signed in")
   }
-  const { getDb } = await import("../db/db")
-  return { db: getDb(), accountId: auth.user.id }
+  const { getDb } = await import("../../db/db")
+  return {
+    db: getDb(),
+    accountId: auth.user.id,
+    name: accountNameFromUser(auth.user),
+  }
 }
 
 function asPlay(data: unknown, key: "play"): Play {

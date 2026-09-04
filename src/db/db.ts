@@ -1,8 +1,10 @@
+import type { PgDatabase, PgQueryResultHKT } from "drizzle-orm/pg-core"
 import { drizzle } from "drizzle-orm/postgres-js"
 import postgres from "postgres"
 import * as schema from "./schema"
 
-export type Db = ReturnType<typeof drizzle<typeof schema>>
+// Any Postgres driver: postgres-js in production, PGlite in tests.
+export type Db = PgDatabase<PgQueryResultHKT, typeof schema>
 
 let db: Db | undefined
 

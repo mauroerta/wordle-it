@@ -10,6 +10,18 @@ export type Statistics = {
   guesses: Record<1 | 2 | 3 | 4 | 5 | 6 | "fail", number>
 }
 
+export function averageAttemptsFromPlays(plays: Play[]): number | undefined {
+  const finished = plays.filter((play) => play.status !== "in_progress")
+  if (finished.length === 0) {
+    return undefined
+  }
+  let total = 0
+  for (const play of finished) {
+    total += play.status === "lost" ? 7 : play.guesses.length
+  }
+  return total / finished.length
+}
+
 export function statisticsFromPlays({
   plays,
   today,

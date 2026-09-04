@@ -2,13 +2,15 @@ import type { ReactNode } from "react"
 import { HeadContent, Scripts, createRootRoute } from "@tanstack/react-router"
 import { getAuth } from "@workos/authkit-tanstack-react-start"
 import { workosConfigured } from "../auth/workos-configured"
+import { THEME_BOOT_SCRIPT } from "../theme/theme-boot"
 
 import appCss from "../styles.css?url"
 import parleCss from "../parle/parle.css?url"
 
 export const Route = createRootRoute({
   ssr: true,
-  loader: async () => {
+  // Who is signed in is route context: guards read it in beforeLoad.
+  beforeLoad: async () => {
     if (!workosConfigured()) {
       return { accountEmail: null as string | null, accountEnabled: false }
     }
@@ -74,7 +76,8 @@ function RootDocument({ children }: { children: ReactNode }) {
       <head>
         <HeadContent />
       </head>
-      <body>
+      <body suppressHydrationWarning>
+        <script dangerouslySetInnerHTML={{ __html: THEME_BOOT_SCRIPT }} />
         {children}
         <Scripts />
       </body>

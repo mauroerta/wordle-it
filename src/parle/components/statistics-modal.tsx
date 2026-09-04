@@ -1,15 +1,21 @@
 import { useEffect, useState } from "react"
-import { formatCountdown, msUntilNextRomeMidnight } from "../game-day/game-day"
-import type { Statistics } from "../statistics/statistics"
+import {
+  formatCountdown,
+  msUntilNextRomeMidnight,
+} from "../../game-day/game-day"
+import type { GroupTeaser } from "../../group/store"
+import type { Statistics } from "../../statistics/statistics"
 import { GameIcon } from "./game-icon"
 
 export function StatisticsModal({
   stats,
   highlightGuess,
+  teasers,
   onShare,
 }: {
   stats: Statistics
   highlightGuess: number | undefined
+  teasers: GroupTeaser[]
   onShare: () => void
 }) {
   const maxBar = Math.max(
@@ -74,6 +80,22 @@ export function StatisticsModal({
           </button>
         </div>
       </div>
+      {teasers.length > 0 ? (
+        <div className="parle-group-teasers">
+          {teasers.map((teaser) => (
+            <a
+              key={teaser.slug}
+              className="parle-group-teaser"
+              href={`/groups/${teaser.slug}`}
+            >
+              <span className="parle-group-teaser-name">{teaser.name}</span>
+              <span className="parle-group-teaser-place">
+                {teaser.place}° · {teaser.attemptsLabel}
+              </span>
+            </a>
+          ))}
+        </div>
+      ) : null}
     </div>
   )
 }

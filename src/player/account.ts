@@ -6,16 +6,22 @@ import { accounts, plays } from "./schema"
 export async function ensureAccount({
   db,
   accountId,
+  name,
 }: {
   db: Db
   accountId: string
+  name: string
 }): Promise<boolean> {
   const inserted = await db
     .insert(accounts)
-    .values({ id: accountId })
+    .values({ id: accountId, name })
     .onConflictDoNothing()
     .returning({ id: accounts.id })
-  return inserted.length > 0
+  if (inserted.length === 0) {
+    await db.update(accounts).set({ name }).where(eq(accounts.id, accountId))
+    return false
+  }
+  return true
 }
 
 export function createAccountPlays({

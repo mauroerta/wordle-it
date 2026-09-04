@@ -11,6 +11,7 @@ import type { PlayStatus } from "../play/play"
 
 export const accounts = pgTable("accounts", {
   id: text("id").primaryKey(),
+  name: text("name").notNull().default(""),
   createdAt: timestamp("created_at", { withTimezone: true })
     .notNull()
     .defaultNow(),

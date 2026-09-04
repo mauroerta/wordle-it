@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from "react"
 import { calendarDateInRome, gameDayIndex } from "../game-day/game-day"
+import type { GroupTeaser } from "../group/store"
 import { letterEvaluations } from "../guess/evaluate-guess"
 import {
   createEmptyPlay,
@@ -12,13 +13,13 @@ import { puzzleForGameDayIndex } from "../puzzle/word-list"
 import { shareText } from "../share/share"
 import { statisticsFromPlays } from "../statistics/statistics"
 import { createDeviceTheme } from "../theme/device-theme"
-import { Board } from "./board"
-import { GameIcon } from "./game-icon"
-import { HelpContent } from "./help-content"
-import { Keyboard } from "./keyboard"
-import { ModalOverlay, PageOverlay } from "./overlays"
-import { SettingsPage } from "./settings-page"
-import { StatisticsModal } from "./statistics-modal"
+import { Board } from "./components/board"
+import { GameIcon } from "./components/game-icon"
+import { HelpContent } from "./components/help-content"
+import { Keyboard } from "./components/keyboard"
+import { ModalOverlay, PageOverlay } from "./components/overlays"
+import { SettingsPage } from "./components/settings-page"
+import { StatisticsModal } from "./components/statistics-modal"
 
 const WIN_TOASTS = [
   "Genio!!!",
@@ -90,6 +91,7 @@ export function ParleGame({
   const [revealRow, setRevealRow] = useState<number | null>(null)
   const [bounceRow, setBounceRow] = useState<number | null>(null)
   const [toasts, setToasts] = useState<Toast[]>([])
+  const [teasers, setTeasers] = useState<GroupTeaser[]>([])
   const toastSeq = useRef(0)
   const playRef = useRef(play)
   const draftRef = useRef(draft)
@@ -104,6 +106,30 @@ export function ParleGame({
     document.body.classList.toggle("colorblind", theme.colorblind)
     themeStore.save(theme)
   }, [theme, themeStore])
+
+  useEffect(() => {
+    if (!accountEmail || play.status === "in_progress") {
+      setTeasers([])
+      return
+    }
+    let cancelled = false
+    void import("../group/queries/groups").then(({ myGroupTeasers }) =>
+      myGroupTeasers()
+        .then((rows) => {
+          if (!cancelled) {
+            setTeasers(rows)
+          }
+        })
+        .catch(() => {
+          if (!cancelled) {
+            setTeasers([])
+          }
+        })
+    )
+    return () => {
+      cancelled = true
+    }
+  }, [accountEmail, play.status, play.gameDay])
 
   useEffect(() => {
     if (!player.hasEverPlayed()) {
@@ -261,7 +287,7 @@ export function ParleGame({
     }
   }
 
-  function onEsci() {
+  function onSignOut() {
     player.onSignOut()
     window.location.href = "/api/auth/sign-out"
   }
@@ -353,6 +379,7 @@ export function ParleGame({
             highlightGuess={
               play.status === "won" ? play.guesses.length : undefined
             }
+            teasers={teasers}
             onShare={() => {
               void onShare()
             }}
@@ -377,7 +404,7 @@ export function ParleGame({
             onHardMode={onHardMode}
             onNightmode={(nightmode) => setTheme({ ...theme, nightmode })}
             onColorblind={(colorblind) => setTheme({ ...theme, colorblind })}
-            onEsci={onEsci}
+            onSignOut={onSignOut}
           />
         </PageOverlay>
       ) : null}

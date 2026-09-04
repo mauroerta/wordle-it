@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react"
 import { flushSync } from "react-dom"
-import type { TileMark } from "../guess/evaluate-guess"
-import { MAX_GUESSES, WORD_LENGTH } from "../play/play"
+import type { TileMark } from "../../guess/evaluate-guess"
+import { MAX_GUESSES, WORD_LENGTH } from "../../play/play"
 
 export function Board({
   guesses,

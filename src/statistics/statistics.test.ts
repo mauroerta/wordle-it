@@ -1,6 +1,6 @@
 import { describe, expect, test } from "vitest"
 import type { Play } from "../play/play"
-import { statisticsFromPlays } from "./statistics"
+import { averageAttemptsFromPlays, statisticsFromPlays } from "./statistics"
 
 function won(gameDay: string, guesses: number): Play {
   return {
@@ -59,5 +59,21 @@ describe("statisticsFromPlays", () => {
     })
     expect(stats.currentStreak).toBe(0)
     expect(stats.maxStreak).toBe(1)
+  })
+})
+
+describe("averageAttemptsFromPlays", () => {
+  test("counts a loss as 7 and ignores in-progress", () => {
+    expect(
+      averageAttemptsFromPlays([
+        won("2026-08-28", 3),
+        lost("2026-08-29"),
+        { ...won("2026-08-30", 1), status: "in_progress" },
+      ])
+    ).toBe(5)
+  })
+
+  test("is undefined when there are no finished Plays", () => {
+    expect(averageAttemptsFromPlays([])).toBeUndefined()
   })
 })
