@@ -52,7 +52,7 @@ via `preserve()`. [`docs/adr/0003-host-on-railway.md`](./docs/adr/0003-host-on-r
 
 ## Do
 
-- [doing] Groups: private Account circles, Today’s ranking, Podiums, Invite, STATISTICHE strip, `/groups`
+- [done] Groups: private Account circles, Today’s ranking, Podiums, Invite, STATISTICHE strip, `/groups`. [ADR 0005](docs/adr/0005-groups-are-a-lens.md)
 
 ## Change
 
@@ -61,7 +61,7 @@ via `preserve()`. [`docs/adr/0003-host-on-railway.md`](./docs/adr/0003-host-on-r
 ## Fix
 
 - [done] Groups: leave/join in one transaction with the Group row locked; slug collision retried; unplayed Members last in Sconfitte; tied fifth kept on Podiums; email never shown as a name
-- [inbox] Groups: Invite freeze after a rotate (CONTEXT says frozen; store has no freeze yet)
+- [done] Groups: Invite freeze (Owner closes the door without changing the link)
 
 ## Improve
 

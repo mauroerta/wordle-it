@@ -1,5 +1,5 @@
 import { createServerFn } from "@tanstack/react-start"
-import { asString, signedInGroups } from "../server"
+import { asBoolean, asString, signedInGroups } from "../server"
 
 export const createGroup = createServerFn({ method: "POST" })
   .validator((data: unknown) => ({ name: asString(data, "name") }))
@@ -60,6 +60,20 @@ export const rotateGroupInvite = createServerFn({ method: "POST" })
         accountId,
       }),
     }
+  })
+
+export const freezeGroupInvite = createServerFn({ method: "POST" })
+  .validator((data: unknown) => ({
+    slug: asString(data, "slug"),
+    frozen: asBoolean(data, "frozen"),
+  }))
+  .handler(async ({ data }) => {
+    const { groups, accountId } = await signedInGroups()
+    await groups.freezeInvite({
+      slug: data.slug,
+      accountId,
+      frozen: data.frozen,
+    })
   })
 
 export const renameGroup = createServerFn({ method: "POST" })

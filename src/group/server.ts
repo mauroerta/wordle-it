@@ -31,6 +31,17 @@ export async function requestOrigin(): Promise<string> {
   return getRequestUrl({ xForwardedHost: true, xForwardedProto: true }).origin
 }
 
+export function asBoolean(data: unknown, key: string): boolean {
+  if (!data || typeof data !== "object" || !(key in data)) {
+    throw new GroupError("Richiesta non valida")
+  }
+  const value = (data as Record<string, unknown>)[key]
+  if (typeof value !== "boolean") {
+    throw new GroupError("Richiesta non valida")
+  }
+  return value
+}
+
 export function asString(data: unknown, key: string): string {
   if (!data || typeof data !== "object" || !(key in data)) {
     throw new GroupError("Richiesta non valida")

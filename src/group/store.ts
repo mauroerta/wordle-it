@@ -32,6 +32,7 @@ export type GroupPage = {
   name: string
   slug: string
   inviteToken: string
+  inviteFrozen: boolean
   isOwner: boolean
   viewerAccountId: string
   today: TodayRow[]
@@ -108,10 +109,14 @@ export function createGroups({ db }: { db: Db }) {
       if (!group) {
         throw new GroupError("Invito non valido")
       }
+      const alreadyMember = Boolean(
+        await membership(tx, { groupId: group.id, accountId })
+      )
+      if (group.inviteFrozen && !alreadyMember) {
+        throw new GroupError("Il gruppo non accetta nuovi membri")
+      }
       const denied = joinDeniedReason({
-        alreadyMember: Boolean(
-          await membership(tx, { groupId: group.id, accountId })
-        ),
+        alreadyMember,
         blocked: Boolean(await block(tx, { groupId: group.id, accountId })),
       })
       if (denied === "blocked") {
@@ -228,6 +233,23 @@ export function createGroups({ db }: { db: Db }) {
     return inviteToken
   }
 
+  // Freeze closes the door without changing the link; the Owner reopens it.
+  async function freezeInvite({
+    slug,
+    accountId,
+    frozen,
+  }: {
+    slug: string
+    accountId: string
+    frozen: boolean
+  }): Promise<void> {
+    const group = await requireOwner(db, { slug, accountId })
+    await db
+      .update(groups)
+      .set({ inviteFrozen: frozen })
+      .where(eq(groups.id, group.id))
+  }
+
   async function rename({
     slug,
     accountId,
@@ -331,6 +353,7 @@ export function createGroups({ db }: { db: Db }) {
       name: group.name,
       slug: group.slug,
       inviteToken: group.inviteToken,
+      inviteFrozen: group.inviteFrozen,
       isOwner: members.some(
         (member) => member.accountId === accountId && member.role === "owner"
       ),
@@ -445,6 +468,7 @@ export function createGroups({ db }: { db: Db }) {
     kick,
     pardon,
     rotateInvite,
+    freezeInvite,
     rename,
     remove,
     listHub,

@@ -6,6 +6,7 @@ import { shareOrCopy } from "../../share/share-or-copy"
 import { invitePath } from "../invite"
 import {
   deleteGroup,
+  freezeGroupInvite,
   kickMember,
   leaveGroup,
   pardonMember,
@@ -96,6 +97,13 @@ export function GroupDetailPage({
       const next = await rotateGroupInvite({ data: { slug: page.slug } })
       setInviteToken(next.inviteToken)
       notice("Nuovo link")
+    })
+  }
+
+  function onFreeze(frozen: boolean) {
+    return attempt(async () => {
+      await freezeGroupInvite({ data: { slug: page.slug, frozen } })
+      await router.invalidate()
     })
   }
 
@@ -259,23 +267,43 @@ export function GroupDetailPage({
       ) : null}
       <section className="parle-groups-section">
         <h1>Invito</h1>
-        <p className="parle-groups-invite">{inviteUrl}</p>
+        {page.inviteFrozen ? (
+          <p className="parle-groups-invite">
+            Invito bloccato: nessuno può unirsi finché il proprietario non lo
+            sblocca.
+          </p>
+        ) : (
+          <p className="parle-groups-invite">{inviteUrl}</p>
+        )}
         <div className="parle-groups-actions">
-          <button
-            className="parle-groups-button"
-            type="button"
-            onClick={() => void onShareInvite()}
-          >
-            Condividi
-          </button>
-          {page.isOwner ? (
+          {page.inviteFrozen ? null : (
             <button
-              className="parle-account-action"
+              className="parle-groups-button"
               type="button"
-              onClick={() => void onRotate()}
+              onClick={() => void onShareInvite()}
             >
-              Nuovo link
+              Condividi
             </button>
+          )}
+          {page.isOwner ? (
+            <>
+              <button
+                className="parle-account-action"
+                type="button"
+                onClick={() => void onFreeze(!page.inviteFrozen)}
+              >
+                {page.inviteFrozen ? "Sblocca" : "Blocca"}
+              </button>
+              {page.inviteFrozen ? null : (
+                <button
+                  className="parle-account-action"
+                  type="button"
+                  onClick={() => void onRotate()}
+                >
+                  Nuovo link
+                </button>
+              )}
+            </>
           ) : null}
         </div>
       </section>

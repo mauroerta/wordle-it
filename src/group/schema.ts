@@ -1,4 +1,10 @@
-import { pgTable, primaryKey, text, timestamp } from "drizzle-orm/pg-core"
+import {
+  boolean,
+  pgTable,
+  primaryKey,
+  text,
+  timestamp,
+} from "drizzle-orm/pg-core"
 import { accounts } from "../player/schema"
 import type { MemberRole } from "./membership"
 
@@ -7,6 +13,7 @@ export const groups = pgTable("groups", {
   name: text("name").notNull(),
   slug: text("slug").notNull().unique(),
   inviteToken: text("invite_token").notNull().unique(),
+  inviteFrozen: boolean("invite_frozen").notNull().default(false),
   createdAt: timestamp("created_at", { withTimezone: true })
     .notNull()
     .defaultNow(),

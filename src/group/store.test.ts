@@ -118,6 +118,34 @@ describe("join", () => {
   })
 })
 
+describe("freeze", () => {
+  test("a frozen Invite admits nobody until the Owner unfreezes it", async () => {
+    const { slug } = await groups.create({ name: "Amici", accountId: "mauro" })
+    const token = await inviteOf(slug, "mauro")
+    await groups.join({ token, accountId: "anna" })
+
+    await groups.freezeInvite({ slug, accountId: "mauro", frozen: true })
+    await expect(groups.join({ token, accountId: "luca" })).rejects.toThrow(
+      "Il gruppo non accetta nuovi membri"
+    )
+    expect(await groups.join({ token, accountId: "anna" })).toEqual({ slug })
+    const page = await groups.page({ slug, accountId: "anna", today: TODAY })
+    expect(page.inviteFrozen).toBe(true)
+
+    await groups.freezeInvite({ slug, accountId: "mauro", frozen: false })
+    expect(await groups.join({ token, accountId: "luca" })).toEqual({ slug })
+  })
+
+  test("only the Owner freezes", async () => {
+    const { slug } = await groups.create({ name: "Amici", accountId: "mauro" })
+    const token = await inviteOf(slug, "mauro")
+    await groups.join({ token, accountId: "anna" })
+    await expect(
+      groups.freezeInvite({ slug, accountId: "anna", frozen: true })
+    ).rejects.toThrow("Solo il proprietario può farlo")
+  })
+})
+
 describe("kick and pardon", () => {
   test("kick blocks the Account from the same Invite until the Owner pardons", async () => {
     const { slug } = await groups.create({ name: "Amici", accountId: "mauro" })

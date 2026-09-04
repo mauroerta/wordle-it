@@ -1,0 +1,1 @@
+ALTER TABLE "groups" ADD COLUMN "invite_frozen" boolean DEFAULT false NOT NULL;

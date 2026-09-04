@@ -63,7 +63,7 @@ The Member who created the Group, or the longest-standing remaining Member after
 _Avoid_: admin, moderator
 
 **Invite**:
-The secret link that lets an Account join a Group. One link per Group. Kick does not rotate it; it blocks that Account until the Owner pardons. Rotate is for a leaked link.
+The secret link that lets an Account join a Group. One link per Group. Kick does not rotate it; it blocks that Account until the Owner pardons. Rotate is for a leaked link. Freeze closes the door without changing the link (Members keep seeing the Group, nobody new joins); the Owner unfreezes.
 _Avoid_: invite code (as a second official name), referral
 
 **Today’s ranking**:
