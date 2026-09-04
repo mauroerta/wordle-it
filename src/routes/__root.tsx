@@ -26,6 +26,10 @@ export const Route = createRootRoute({
           "Indovina la parola nascosta in 6 tentativi. Un nuovo puzzle ogni giorno.",
       },
       { name: "theme-color", content: "#6aaa64" },
+      { name: "mobile-web-app-capable", content: "yes" },
+      { name: "apple-mobile-web-app-capable", content: "yes" },
+      { name: "apple-mobile-web-app-title", content: "Parle" },
+      { name: "apple-mobile-web-app-status-bar-style", content: "default" },
       {
         property: "og:title",
         content: "Par🇮🇹le - Un gioco di parole al giorno (Wordle in italiano)",
@@ -40,10 +44,24 @@ export const Route = createRootRoute({
     links: [
       { rel: "stylesheet", href: appCss },
       { rel: "stylesheet", href: parleCss },
-      { rel: "icon", href: "/favicon.png" },
+      {
+        rel: "icon",
+        type: "image/png",
+        sizes: "32x32",
+        href: "/parle_logo_32x32.png",
+      },
       { rel: "apple-touch-icon", href: "/parle_logo_192x192.png" },
       { rel: "manifest", href: "/manifest.json" },
     ],
+    // SW caches hashed assets; skip in Vite or a refresh serves yesterday's board.
+    scripts: import.meta.env.PROD
+      ? [
+          {
+            children:
+              "if('serviceWorker'in navigator)window.addEventListener('load',function(){navigator.serviceWorker.register('/sw.js')})",
+          },
+        ]
+      : [],
   }),
   notFoundComponent: NotFound,
   shellComponent: RootDocument,
