@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react"
+import { Link } from "@tanstack/react-router"
 import {
   formatCountdown,
   msUntilNextRomeMidnight,
@@ -83,16 +84,17 @@ export function StatisticsModal({
       {teasers.length > 0 ? (
         <div className="parle-group-teasers">
           {teasers.map((teaser) => (
-            <a
+            <Link
               key={teaser.slug}
               className="parle-group-teaser"
-              href={`/groups/${teaser.slug}`}
+              to="/groups/$slug"
+              params={{ slug: teaser.slug }}
             >
               <span className="parle-group-teaser-name">{teaser.name}</span>
               <span className="parle-group-teaser-place">
                 {teaser.place}° · {teaser.attemptsLabel}
               </span>
-            </a>
+            </Link>
           ))}
         </div>
       ) : null}

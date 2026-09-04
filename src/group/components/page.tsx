@@ -31,7 +31,10 @@ export function GroupDetailPage({
   const [inviteToken, setInviteToken] = useState(page.inviteToken)
   const [name, setName] = useState(page.name)
   const [toast, setToast] = useState<string | null>(null)
-  const inviteUrl = `${inviteOrigin}${invitePath(inviteToken)}`
+  const origin =
+    inviteOrigin ||
+    (typeof window === "undefined" ? "" : window.location.origin)
+  const inviteUrl = `${origin}${invitePath(inviteToken)}`
   const dayOffset = gameDayIndex(new Date())
 
   function notice(text: string) {

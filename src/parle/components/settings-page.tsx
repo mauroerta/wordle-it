@@ -1,4 +1,5 @@
 import type { ReactNode } from "react"
+import { Link } from "@tanstack/react-router"
 import { REPO_URL, X_URL } from "./credits-page"
 
 export function SettingsPage({
@@ -72,9 +73,9 @@ export function SettingsPage({
             }
           >
             {accountEmail ? (
-              <a className="parle-account-action" href="/groups">
+              <Link className="parle-account-action" to="/groups">
                 Apri
-              </a>
+              </Link>
             ) : (
               <a
                 className="parle-account-action"
@@ -100,9 +101,9 @@ export function SettingsPage({
           </div>
         </div>
         <SettingRow title="Crediti">
-          <a className="parle-account-action" href="/credits">
+          <Link className="parle-account-action" to="/credits">
             Apri
-          </a>
+          </Link>
         </SettingRow>
       </section>
       <div className="parle-footnote">

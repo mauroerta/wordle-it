@@ -21,12 +21,17 @@ export const loadGroupPage = createServerFn({ method: "GET" })
   .handler(async ({ data }) => {
     const { groups, accountId, today } = await signedInGroups()
     const page = await groups.page({ slug: data.slug, accountId, today })
-    // Static import, handler-only: Start strips it from the client bundle.
-    // A dynamic import of this module breaks the Nitro SSR chunk (ssr_exports).
-    // Behind Railway's proxy the public host and scheme are x-forwarded-*.
-    const inviteOrigin = getRequestUrl({
+    return { page, inviteOrigin: publicOrigin() }
+  })
+
+// Server-fn RPC in Vite may have no StartEvent ALS; client falls back.
+function publicOrigin(): string {
+  try {
+    return getRequestUrl({
       xForwardedHost: true,
       xForwardedProto: true,
     }).origin
-    return { page, inviteOrigin }
-  })
+  } catch {
+    return ""
+  }
+}

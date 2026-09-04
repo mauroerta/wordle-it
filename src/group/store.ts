@@ -146,7 +146,7 @@ export function createGroups({ db }: { db: Db }) {
         .from(groupMembers)
         .where(eq(groupMembers.groupId, group.id))
       if (!members.some((member) => member.accountId === accountId)) {
-        throw new GroupError("Pagina non trovata")
+        throw GroupError.missing()
       }
       const nextOwner = successorOwnerId({
         members: members.map((member) => ({
@@ -484,7 +484,7 @@ async function lockGroup(tx: Tx, slug: string) {
     .where(eq(groups.slug, slug))
     .for("update")
   if (!group) {
-    throw new GroupError("Pagina non trovata")
+    throw GroupError.missing()
   }
   return group
 }
@@ -495,11 +495,11 @@ async function requireMembership(
 ) {
   const [group] = await conn.select().from(groups).where(eq(groups.slug, slug))
   if (!group) {
-    throw new GroupError("Pagina non trovata")
+    throw GroupError.missing()
   }
   const mine = await membership(conn, { groupId: group.id, accountId })
   if (!mine) {
-    throw new GroupError("Pagina non trovata")
+    throw GroupError.missing()
   }
   return { ...group, role: mine.role }
 }

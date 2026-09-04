@@ -1,7 +1,6 @@
 import type { ReactNode } from "react"
 import { HeadContent, Scripts, createRootRoute } from "@tanstack/react-router"
-import { getAuth } from "@workos/authkit-tanstack-react-start"
-import { workosConfigured } from "../auth/workos-configured"
+import { loadViewer } from "../auth/viewer"
 import { THEME_BOOT_SCRIPT } from "../theme/theme-boot"
 
 import appCss from "../styles.css?url"
@@ -10,16 +9,7 @@ import parleCss from "../parle/parle.css?url"
 export const Route = createRootRoute({
   ssr: true,
   // Who is signed in is route context: guards read it in beforeLoad.
-  beforeLoad: async () => {
-    if (!workosConfigured()) {
-      return { accountEmail: null as string | null, accountEnabled: false }
-    }
-    const auth = await getAuth()
-    return {
-      accountEmail: auth.user?.email ?? null,
-      accountEnabled: true,
-    }
-  },
+  beforeLoad: () => loadViewer(),
   head: () => ({
     meta: [
       { charSet: "utf-8" },
