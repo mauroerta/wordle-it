@@ -13,6 +13,8 @@ import { puzzleForGameDayIndex } from "../puzzle/word-list"
 import { shareText } from "../share/share"
 import { statisticsFromPlays } from "../statistics/statistics"
 import { createDeviceTheme } from "../theme/device-theme"
+import { InstallPrompt } from "../pwa/components/install-prompt"
+import { usePwaInstall } from "../pwa/hooks/use-pwa-install"
 import { Board } from "./components/board"
 import { GameIcon } from "./components/game-icon"
 import { HelpContent } from "./components/help-content"
@@ -101,8 +103,13 @@ export function ParleGame({
   playRef.current = play
   canInputRef.current = canInput
 
+  const pwaInstall = usePwaInstall({
+    blocked: showHelpModal || showStats || page !== null,
+  })
+
   useEffect(() => {
     document.body.classList.toggle("nightmode", theme.nightmode)
+    document.body.classList.toggle("dark", theme.nightmode)
     document.body.classList.toggle("colorblind", theme.colorblind)
     themeStore.save(theme)
   }, [theme, themeStore])
@@ -401,13 +408,16 @@ export function ParleGame({
             dayOffset={dayOffset}
             accountEmail={accountEmail}
             accountEnabled={accountEnabled}
+            canInstallApp={pwaInstall.canPrompt}
             onHardMode={onHardMode}
             onNightmode={(nightmode) => setTheme({ ...theme, nightmode })}
             onColorblind={(colorblind) => setTheme({ ...theme, colorblind })}
             onSignOut={onSignOut}
+            onInstallApp={pwaInstall.openPrompt}
           />
         </PageOverlay>
       ) : null}
+      <InstallPrompt install={pwaInstall} />
       <div className="parle-toaster">
         {toasts
           .filter((toast) => !toast.system)

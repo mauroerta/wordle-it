@@ -8,5 +8,6 @@ var n=s.getItem(${JSON.stringify(NIGHTMODE_KEY)});
 var dark=n===null?window.matchMedia("(prefers-color-scheme: dark)").matches:JSON.parse(n)===true;
 var c=s.getItem(${JSON.stringify(COLORBLIND_KEY)});
 b.classList.toggle("nightmode",dark);
+b.classList.toggle("dark",dark);
 b.classList.toggle("colorblind",c!==null&&JSON.parse(c)===true);
 }catch(e){}})()`

@@ -10,10 +10,12 @@ export function SettingsPage({
   dayOffset,
   accountEmail,
   accountEnabled,
+  canInstallApp,
   onHardMode,
   onNightmode,
   onColorblind,
   onSignOut,
+  onInstallApp,
 }: {
   hardMode: boolean
   hardModeLocked: boolean
@@ -22,10 +24,12 @@ export function SettingsPage({
   dayOffset: number
   accountEmail: string | null
   accountEnabled: boolean
+  canInstallApp: boolean
   onHardMode: (checked: boolean) => void
   onNightmode: (checked: boolean) => void
   onColorblind: (checked: boolean) => void
   onSignOut: () => void
+  onInstallApp: () => void
 }) {
   return (
     <div className="parle-settings">
@@ -46,6 +50,20 @@ export function SettingsPage({
         <SettingRow title="Colori ad alto contrasto">
           <Switch checked={colorblind} onChange={onColorblind} />
         </SettingRow>
+        {canInstallApp ? (
+          <SettingRow
+            title="Installa l'app"
+            description="Aggiungi Parle alla schermata Home"
+          >
+            <button
+              type="button"
+              className="parle-account-action"
+              onClick={onInstallApp}
+            >
+              Apri
+            </button>
+          </SettingRow>
+        ) : null}
       </section>
       {accountEnabled ? (
         <section>

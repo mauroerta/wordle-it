@@ -40,12 +40,12 @@ describe("THEME_BOOT_SCRIPT", () => {
         stored: { "parle.nightmode": "true", "parle.colorblind": "true" },
         prefersDark: false,
       })
-    ).toEqual(new Set(["nightmode", "colorblind"]))
+    ).toEqual(new Set(["nightmode", "dark", "colorblind"]))
   })
 
   test("falls back to the system preference when nothing is saved", () => {
     expect(boot({ stored: {}, prefersDark: true })).toEqual(
-      new Set(["nightmode"])
+      new Set(["nightmode", "dark"])
     )
     expect(boot({ stored: {}, prefersDark: false })).toEqual(new Set())
   })

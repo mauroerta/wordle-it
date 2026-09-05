@@ -22,8 +22,8 @@ Live look: https://pietroppeter.github.io/wordle-it/
 Check `.agents/skills/` before you implement. Read and follow the matching
 skill.
 
-- `conventions`. TypeScript under `src/`. Binding.
-- shadcn CLI for Dialog, Switch, Button, Sheet. The board is custom Parle UI.
+- `conventions`. TypeScript under `src/`. Binding. Prefer shadcn for
+  product UI; the board stays custom Parle.
 
 TanStack Start, Drizzle, WorkOS: check current docs. Do not trust training data.
 

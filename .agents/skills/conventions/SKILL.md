@@ -12,9 +12,12 @@ test clearer.
 TanStack Start, Drizzle, WorkOS: check current docs. Do not trust training data.
 
 Format follows `.oxfmtrc.json`. Shape of the code follows
-this skill. `src/lib/utils.ts` is the shadcn `cn` helper, not a dumping
-ground. `src/components/ui/` is generated shadcn. Parle board colors are
-the live CSS variables, not shadcn semantic tokens.
+this skill. Prefer shadcn components (`src/components/ui/`, added via
+`pnpm dlx shadcn@latest add`) for product UI — dialogs, forms, buttons,
+sheets, alerts, and the like. Search the registry before inventing markup.
+On review of new work, replace hand-rolled UI with an existing shadcn
+component when one fits. The board and other live-parity game chrome stay
+custom Parle UI (`parle.css` / game tokens), not shadcn semantic colors.
 
 ## Before you write
 
