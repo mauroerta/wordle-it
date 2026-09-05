@@ -16,58 +16,60 @@ export function Keyboard({
   onKey: (key: string) => void
 }) {
   return (
-    <div
-      className="parle-keyboard"
-      onMouseDown={(event) => {
-        if (
-          event.target instanceof HTMLElement &&
-          event.target.closest("button")
-        ) {
-          event.preventDefault()
-        }
-      }}
-    >
-      {ROWS.map((row, i) => (
-        <div className="parle-keyboard-row" key={i}>
-          {row.map((key, j) => {
-            if (key === "-") {
-              return <div className="parle-key-half" key={`${i}-${j}`} />
-            }
-            if (key === "Enter") {
+    <div className="parle-keyboard">
+      <div
+        className="parle-keyboard-inner"
+        onMouseDown={(event) => {
+          if (
+            event.target instanceof HTMLElement &&
+            event.target.closest("button")
+          ) {
+            event.preventDefault()
+          }
+        }}
+      >
+        {ROWS.map((row, i) => (
+          <div className="parle-keyboard-row" key={i}>
+            {row.map((key, j) => {
+              if (key === "-") {
+                return <div className="parle-key-half" key={`${i}-${j}`} />
+              }
+              if (key === "Enter") {
+                return (
+                  <button
+                    className="parle-key parle-key-wide"
+                    key={key}
+                    type="button"
+                    onClick={() => onKey("Enter")}
+                  >
+                    invio
+                  </button>
+                )
+              }
+              if (key === "Backspace") {
+                return (
+                  <button
+                    className="parle-key parle-key-wide"
+                    key={key}
+                    type="button"
+                    onClick={() => onKey("Backspace")}
+                  >
+                    <GameIcon name="backspace" />
+                  </button>
+                )
+              }
               return (
-                <button
-                  className="parle-key parle-key-wide"
+                <LetterKey
                   key={key}
-                  type="button"
-                  onClick={() => onKey("Enter")}
-                >
-                  invio
-                </button>
+                  letter={key}
+                  mark={letterMarks[key]}
+                  onKey={onKey}
+                />
               )
-            }
-            if (key === "Backspace") {
-              return (
-                <button
-                  className="parle-key parle-key-wide"
-                  key={key}
-                  type="button"
-                  onClick={() => onKey("Backspace")}
-                >
-                  <GameIcon name="backspace" />
-                </button>
-              )
-            }
-            return (
-              <LetterKey
-                key={key}
-                letter={key}
-                mark={letterMarks[key]}
-                onKey={onKey}
-              />
-            )
-          })}
-        </div>
-      ))}
+            })}
+          </div>
+        ))}
+      </div>
     </div>
   )
 }

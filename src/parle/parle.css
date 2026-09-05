@@ -228,8 +228,14 @@ body {
   animation: parle-bounce 1000ms;
 }
 
+/* Live: game-keyboard :host is 200px; #keyboard has margin 0 8px. */
 .parle-keyboard {
-  height: var(--keyboard-height);
+  height: calc(var(--keyboard-height) + env(safe-area-inset-bottom, 0px));
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+  box-sizing: border-box;
+}
+
+.parle-keyboard-inner {
   margin: 0 8px;
   user-select: none;
 }
@@ -244,6 +250,8 @@ body {
 .parle-key {
   font-family: inherit;
   font-weight: 700;
+  /* Tailwind preflight sets font: inherit (16px); live keys use the UA button size. */
+  font-size: revert;
   border: 0;
   padding: 0;
   margin: 0 6px 0 0;
@@ -658,27 +666,25 @@ button.parle-account-action {
   color: var(--key-evaluated-text-color);
   font-family: inherit;
   font-weight: 700;
+  font-size: 20px;
+  line-height: normal;
   border-radius: 4px;
   cursor: pointer;
   border: none;
+  padding: 0;
   user-select: none;
   display: flex;
   justify-content: center;
   align-items: center;
   text-transform: uppercase;
+  -webkit-tap-highlight-color: rgb(0 0 0 / 30%);
   width: 80%;
-  font-size: 20px;
   height: 52px;
+  -webkit-filter: brightness(100%);
 }
 
 .parle-share-button:hover {
   opacity: 0.9;
-}
-
-.parle-share-button svg {
-  width: 24px;
-  height: 24px;
-  padding-left: 8px;
 }
 
 @keyframes parle-pop {

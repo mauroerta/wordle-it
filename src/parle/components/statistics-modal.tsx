@@ -6,7 +6,6 @@ import {
 } from "../../game-day/game-day"
 import type { GroupTeaser } from "../../group/store"
 import type { Statistics } from "../../statistics/statistics"
-import { GameIcon } from "./game-icon"
 
 export function StatisticsModal({
   stats,
@@ -77,7 +76,6 @@ export function StatisticsModal({
             onClick={onShare}
           >
             Condividi
-            <GameIcon name="share" />
           </button>
         </div>
       </div>
