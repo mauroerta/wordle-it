@@ -1,5 +1,6 @@
 import type { ReactNode } from "react"
 import { HeadContent, Scripts, createRootRoute } from "@tanstack/react-router"
+import { Empty, EmptyDescription, EmptyHeader } from "@/components/ui/empty"
 import { loadViewer } from "../auth/viewer"
 import { THEME_BOOT_SCRIPT } from "../theme/theme-boot"
 
@@ -73,7 +74,11 @@ function NotFound() {
       <header className="parle-header">
         <div className="parle-title">PAR🇮🇹LE</div>
       </header>
-      <p className="parle-not-found">Pagina non trovata</p>
+      <Empty className="parle-not-found">
+        <EmptyHeader>
+          <EmptyDescription>Pagina non trovata</EmptyDescription>
+        </EmptyHeader>
+      </Empty>
     </div>
   )
 }

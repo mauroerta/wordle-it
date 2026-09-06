@@ -393,12 +393,15 @@ export function ParleGame({
       />
       <Keyboard letterMarks={marks} onKey={onKey} />
       {showHelpModal ? (
-        <ModalOverlay onClose={() => setShowHelpModal(false)}>
+        <ModalOverlay
+          title="Come giocare"
+          onClose={() => setShowHelpModal(false)}
+        >
           <HelpContent />
         </ModalOverlay>
       ) : null}
       {showStats ? (
-        <ModalOverlay onClose={() => setShowStats(false)}>
+        <ModalOverlay title="Statistiche" onClose={() => setShowStats(false)}>
           <StatisticsModal
             stats={stats}
             highlightGuess={

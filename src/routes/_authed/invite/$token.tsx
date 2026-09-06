@@ -1,4 +1,5 @@
 import { createFileRoute, isRedirect, redirect } from "@tanstack/react-router"
+import { Alert, AlertDescription } from "@/components/ui/alert"
 import { PageChrome } from "../../../chrome/page-chrome"
 import { joinGroup } from "../../../group/mutations/groups"
 
@@ -23,7 +24,9 @@ function InviteJoin() {
   const data = Route.useLoaderData()
   return (
     <PageChrome heading="Invito" back={{ to: "/groups", label: "Gruppi" }}>
-      <p className="parle-groups-error">{data.error}</p>
+      <Alert className="parle-groups-error">
+        <AlertDescription>{data.error}</AlertDescription>
+      </Alert>
     </PageChrome>
   )
 }

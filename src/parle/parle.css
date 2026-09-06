@@ -101,6 +101,7 @@ body {
   display: flex;
   flex-direction: column;
   position: relative;
+  isolation: isolate;
 }
 
 .parle-header {
@@ -117,6 +118,19 @@ body {
 .parle-not-found {
   text-align: center;
   margin-top: 2rem;
+}
+
+.parle-not-found[data-slot="empty"] {
+  flex: none;
+  gap: 0;
+  border: none;
+  border-radius: 0;
+  padding: 0;
+}
+
+.parle-not-found [data-slot="empty-description"] {
+  color: inherit;
+  font-size: inherit;
 }
 
 .parle-title {
@@ -356,6 +370,29 @@ body {
   z-index: 3000;
 }
 
+.parle-modal-layer {
+  position: absolute;
+  inset: 0;
+  z-index: 3001;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: auto;
+  max-width: none;
+  max-height: none;
+  padding: 0;
+  border: none;
+  background: none;
+  box-shadow: none;
+  transform: none;
+  pointer-events: none;
+  outline: none;
+}
+
+.parle-modal-layer > .parle-modal {
+  pointer-events: auto;
+}
+
 .parle-modal {
   position: relative;
   border-radius: 8px;
@@ -377,9 +414,17 @@ body {
   inset: 0;
   display: flex;
   justify-content: center;
+  width: auto;
+  max-width: none;
+  max-height: none;
+  padding: 0;
+  border: none;
   background-color: var(--color-background);
+  box-shadow: none;
+  transform: none;
   animation: parle-slide-in 100ms linear;
   z-index: 2000;
+  outline: none;
 }
 
 .parle-page {
@@ -402,6 +447,7 @@ body {
 }
 
 .parle-page-header h1,
+.parle-page-header [data-slot="dialog-title"],
 .parle-stats h1 {
   font-weight: 700;
   font-size: 16px;
@@ -410,6 +456,7 @@ body {
   text-align: center;
   margin-top: 0.67em;
   margin-bottom: 10px;
+  line-height: normal;
 }
 
 .parle-page-close {
@@ -500,18 +547,27 @@ button.parle-account-action {
   padding-right: 8px;
 }
 
+.parle-setting [data-slot="field-content"] {
+  gap: 0;
+}
+
 .parle-setting-title {
   font-size: 18px;
+  font-weight: inherit;
+  line-height: normal;
+  color: inherit;
 }
 
 .parle-setting-description {
   font-size: 12px;
+  line-height: normal;
   color: var(--color-tone-2);
 }
 
 .parle-switch {
   height: 20px;
   width: 32px;
+  vertical-align: middle;
   background: var(--color-tone-3);
   border-radius: 999px;
   display: block;
@@ -521,12 +577,13 @@ button.parle-account-action {
   padding: 0;
 }
 
-.parle-switch[data-checked="true"] {
+.parle-switch[data-checked] {
   background: var(--color-correct);
 }
 
-.parle-switch[data-disabled="true"] {
+.parle-switch:disabled {
   opacity: 0.5;
+  cursor: default;
 }
 
 .parle-switch-knob {
@@ -542,7 +599,7 @@ button.parle-account-action {
   transition: transform 0.3s;
 }
 
-.parle-switch[data-checked="true"] .parle-switch-knob {
+.parle-switch[data-checked] .parle-switch-knob {
   transform: translateX(calc(100% - 4px));
 }
 
@@ -860,6 +917,35 @@ button.parle-account-action {
   color: var(--color-tone-1);
 }
 
+.parle-groups-empty[data-slot="empty"] {
+  flex: none;
+  gap: 0;
+  border: none;
+  border-radius: 0;
+  padding: 0;
+}
+
+.parle-groups-empty [data-slot="empty-description"] {
+  font-size: 14px;
+  color: var(--color-tone-2);
+}
+
+.parle-groups-error[data-slot="alert"],
+.parle-groups-toast[data-slot="alert"] {
+  display: block;
+  border: none;
+  border-radius: 0;
+  background: none;
+  padding: 0;
+}
+
+.parle-groups-error [data-slot="alert-description"],
+.parle-groups-toast [data-slot="alert-description"] {
+  font-size: 14px;
+  text-align: center;
+  color: inherit;
+}
+
 .parle-groups-form {
   display: flex;
   flex-direction: column;
@@ -871,6 +957,8 @@ button.parle-account-action {
 .parle-text-input {
   font-family: inherit;
   font-size: 16px;
+  height: auto;
+  min-height: 0;
   border: 1px solid var(--color-tone-4);
   background: var(--color-tone-7);
   color: var(--color-tone-1);
@@ -878,6 +966,7 @@ button.parle-account-action {
   border-radius: 4px;
   width: 100%;
   box-sizing: border-box;
+  box-shadow: none;
 }
 
 .parle-groups-button {
@@ -1056,6 +1145,8 @@ button.parle-account-action {
   display: flex;
   align-items: center;
   justify-content: center;
+  width: 100%;
+  height: 100%;
   padding: 8px 16px;
   border: none;
   background: none;
@@ -1064,6 +1155,8 @@ button.parle-account-action {
   font-size: 14px;
   font-weight: 700;
   line-height: 1.3;
+  white-space: normal;
+  text-align: center;
   cursor: pointer;
 }
 
@@ -1075,6 +1168,9 @@ button.parle-account-action {
   position: absolute;
   top: 8px;
   right: 0;
+  width: 24px;
+  height: 24px;
+  padding: 0;
 }
 
 @media (prefers-reduced-motion: no-preference) {

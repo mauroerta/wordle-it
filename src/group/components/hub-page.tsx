@@ -1,6 +1,10 @@
 import { useState } from "react"
 import type { FormEvent } from "react"
 import { Link, useRouter } from "@tanstack/react-router"
+import { Alert, AlertDescription } from "@/components/ui/alert"
+import { Empty, EmptyDescription, EmptyHeader } from "@/components/ui/empty"
+import { Field, FieldGroup, FieldLabel } from "@/components/ui/field"
+import { Input } from "@/components/ui/input"
 import { tokenFromInviteInput } from "../invite"
 import { createGroup, joinGroup } from "../mutations/groups"
 import type { GroupHubRow } from "../store"
@@ -38,11 +42,19 @@ export function GroupHubPage({ rows }: { rows: GroupHubRow[] }) {
 
   return (
     <PageChrome heading="Gruppi" back={{ to: "/", label: "Gioco" }}>
-      {error ? <p className="parle-groups-error">{error}</p> : null}
+      {error ? (
+        <Alert className="parle-groups-error">
+          <AlertDescription>{error}</AlertDescription>
+        </Alert>
+      ) : null}
       {rows.length === 0 ? (
-        <p className="parle-groups-empty">
-          Nessun gruppo. Creane uno o unisciti con un invito.
-        </p>
+        <Empty className="parle-groups-empty">
+          <EmptyHeader>
+            <EmptyDescription>
+              Nessun gruppo. Creane uno o unisciti con un invito.
+            </EmptyDescription>
+          </EmptyHeader>
+        </Empty>
       ) : (
         <ul className="parle-groups-list">
           {rows.map((row) => (
@@ -75,32 +87,46 @@ export function GroupHubPage({ rows }: { rows: GroupHubRow[] }) {
         className="parle-groups-form"
         onSubmit={(event) => void onCreate(event)}
       >
-        <div className="parle-setting-title">Crea un gruppo</div>
-        <input
-          className="parle-text-input"
-          value={name}
-          onChange={(event) => setName(event.target.value)}
-          placeholder="Nome"
-          maxLength={48}
-        />
-        <button className="parle-groups-button" type="submit">
-          Crea
-        </button>
+        <FieldGroup className="gap-2">
+          <Field>
+            <FieldLabel className="parle-setting-title" htmlFor="group-name">
+              Crea un gruppo
+            </FieldLabel>
+            <Input
+              id="group-name"
+              className="parle-text-input"
+              value={name}
+              onChange={(event) => setName(event.target.value)}
+              placeholder="Nome"
+              maxLength={48}
+            />
+          </Field>
+          <button className="parle-groups-button" type="submit">
+            Crea
+          </button>
+        </FieldGroup>
       </form>
       <form
         className="parle-groups-form"
         onSubmit={(event) => void onJoin(event)}
       >
-        <div className="parle-setting-title">Unisciti con un invito</div>
-        <input
-          className="parle-text-input"
-          value={invite}
-          onChange={(event) => setInvite(event.target.value)}
-          placeholder="Incolla il link"
-        />
-        <button className="parle-groups-button" type="submit">
-          Unisciti
-        </button>
+        <FieldGroup className="gap-2">
+          <Field>
+            <FieldLabel className="parle-setting-title" htmlFor="group-invite">
+              Unisciti con un invito
+            </FieldLabel>
+            <Input
+              id="group-invite"
+              className="parle-text-input"
+              value={invite}
+              onChange={(event) => setInvite(event.target.value)}
+              placeholder="Incolla il link"
+            />
+          </Field>
+          <button className="parle-groups-button" type="submit">
+            Unisciti
+          </button>
+        </FieldGroup>
       </form>
     </PageChrome>
   )

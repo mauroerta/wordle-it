@@ -1,6 +1,9 @@
 import { useState } from "react"
 import type { FormEvent } from "react"
 import { useRouter } from "@tanstack/react-router"
+import { Alert, AlertDescription } from "@/components/ui/alert"
+import { Field, FieldGroup, FieldLabel } from "@/components/ui/field"
+import { Input } from "@/components/ui/input"
 import { gameDayIndex } from "../../game-day/game-day"
 import { shareOrCopy } from "../../share/share-or-copy"
 import { invitePath } from "../invite"
@@ -18,7 +21,14 @@ import type { PodiumMetric } from "../ranking/podium"
 import { shareTodayText, sharePodiumText } from "../ranking/share"
 import type { GroupPage } from "../store"
 import { PageChrome } from "../../chrome/page-chrome"
+import { ConfirmDialog } from "./confirm-dialog"
 import { ShareIcon } from "./icons"
+
+type Confirm =
+  | { kind: "rotate" }
+  | { kind: "leave" }
+  | { kind: "delete" }
+  | { kind: "kick"; accountId: string; memberName: string }
 
 export function GroupDetailPage({
   page,
@@ -31,6 +41,7 @@ export function GroupDetailPage({
   const [inviteToken, setInviteToken] = useState(page.inviteToken)
   const [name, setName] = useState(page.name)
   const [toast, setToast] = useState<string | null>(null)
+  const [confirm, setConfirm] = useState<Confirm | null>(null)
   const origin =
     inviteOrigin ||
     (typeof window === "undefined" ? "" : window.location.origin)
@@ -90,12 +101,7 @@ export function GroupDetailPage({
     return share({ text: inviteUrl, copied: "Link copiato" })
   }
 
-  function onRotate() {
-    if (
-      !window.confirm("Il link attuale smetterà di funzionare. Continuare?")
-    ) {
-      return
-    }
+  function rotateInvite() {
     return attempt(async () => {
       const next = await rotateGroupInvite({ data: { slug: page.slug } })
       setInviteToken(next.inviteToken)
@@ -118,20 +124,14 @@ export function GroupDetailPage({
     })
   }
 
-  function onLeave() {
-    if (!window.confirm("Uscire da questo gruppo?")) {
-      return
-    }
+  function leave() {
     return attempt(async () => {
       await leaveGroup({ data: { slug: page.slug } })
       await router.navigate({ to: "/groups" })
     })
   }
 
-  function onDelete() {
-    if (!window.confirm("Eliminare questo gruppo?")) {
-      return
-    }
+  function removeGroup() {
     return attempt(async () => {
       await deleteGroup({ data: { slug: page.slug } })
       await router.navigate({ to: "/groups" })
@@ -145,19 +145,41 @@ export function GroupDetailPage({
     })
   }
 
-  function onKick(accountId: string, memberName: string) {
-    if (!window.confirm(`Escludere ${memberName} dal gruppo?`)) {
-      return
-    }
+  function kick(accountId: string) {
     return attempt(async () => {
       await kickMember({ data: { slug: page.slug, accountId } })
       await router.invalidate()
     })
   }
 
+  function onConfirmed() {
+    const current = confirm
+    setConfirm(null)
+    if (!current) {
+      return
+    }
+    if (current.kind === "rotate") {
+      void rotateInvite()
+      return
+    }
+    if (current.kind === "leave") {
+      void leave()
+      return
+    }
+    if (current.kind === "delete") {
+      void removeGroup()
+      return
+    }
+    void kick(current.accountId)
+  }
+
   return (
     <PageChrome heading={page.name} back={{ to: "/groups", label: "Gruppi" }}>
-      {toast ? <p className="parle-groups-toast">{toast}</p> : null}
+      {toast ? (
+        <Alert className="parle-groups-toast">
+          <AlertDescription>{toast}</AlertDescription>
+        </Alert>
+      ) : null}
       <section className="parle-groups-section">
         <div className="parle-groups-section-head">
           <h1>Oggi</h1>
@@ -240,7 +262,13 @@ export function GroupDetailPage({
                 <button
                   className="parle-account-action"
                   type="button"
-                  onClick={() => void onKick(member.accountId, member.name)}
+                  onClick={() =>
+                    setConfirm({
+                      kind: "kick",
+                      accountId: member.accountId,
+                      memberName: member.name,
+                    })
+                  }
                 >
                   Escludi
                 </button>
@@ -301,7 +329,7 @@ export function GroupDetailPage({
                 <button
                   className="parle-account-action"
                   type="button"
-                  onClick={() => void onRotate()}
+                  onClick={() => setConfirm({ kind: "rotate" })}
                 >
                   Nuovo link
                 </button>
@@ -315,23 +343,33 @@ export function GroupDetailPage({
           className="parle-groups-form"
           onSubmit={(event) => void onRename(event)}
         >
-          <div className="parle-setting-title">Rinomina</div>
-          <input
-            className="parle-text-input"
-            value={name}
-            onChange={(event) => setName(event.target.value)}
-            maxLength={48}
-          />
-          <button className="parle-groups-button" type="submit">
-            Salva
-          </button>
+          <FieldGroup className="gap-2">
+            <Field>
+              <FieldLabel
+                className="parle-setting-title"
+                htmlFor="group-rename"
+              >
+                Rinomina
+              </FieldLabel>
+              <Input
+                id="group-rename"
+                className="parle-text-input"
+                value={name}
+                onChange={(event) => setName(event.target.value)}
+                maxLength={48}
+              />
+            </Field>
+            <button className="parle-groups-button" type="submit">
+              Salva
+            </button>
+          </FieldGroup>
         </form>
       ) : null}
       <div className="parle-groups-actions parle-groups-footer">
         <button
           className="parle-account-action"
           type="button"
-          onClick={() => void onLeave()}
+          onClick={() => setConfirm({ kind: "leave" })}
         >
           Esci dal gruppo
         </button>
@@ -339,12 +377,53 @@ export function GroupDetailPage({
           <button
             className="parle-account-action"
             type="button"
-            onClick={() => void onDelete()}
+            onClick={() => setConfirm({ kind: "delete" })}
           >
             Elimina gruppo
           </button>
         ) : null}
       </div>
+      <ConfirmDialog
+        open={confirm !== null}
+        title={confirmTitle(confirm)}
+        confirmLabel={confirmLabel(confirm)}
+        destructive={confirm?.kind === "delete" || confirm?.kind === "kick"}
+        onConfirm={onConfirmed}
+        onOpenChange={(open) => {
+          if (!open) {
+            setConfirm(null)
+          }
+        }}
+      />
     </PageChrome>
   )
+}
+
+function confirmTitle(confirm: Confirm | null): string {
+  if (!confirm) {
+    return ""
+  }
+  if (confirm.kind === "rotate") {
+    return "Il link attuale smetterà di funzionare. Continuare?"
+  }
+  if (confirm.kind === "leave") {
+    return "Uscire da questo gruppo?"
+  }
+  if (confirm.kind === "delete") {
+    return "Eliminare questo gruppo?"
+  }
+  return `Escludere ${confirm.memberName} dal gruppo?`
+}
+
+function confirmLabel(confirm: Confirm | null): string {
+  if (confirm?.kind === "rotate") {
+    return "Continua"
+  }
+  if (confirm?.kind === "leave") {
+    return "Esci"
+  }
+  if (confirm?.kind === "delete") {
+    return "Elimina"
+  }
+  return "Escludi"
 }
