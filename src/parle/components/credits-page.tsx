@@ -32,6 +32,16 @@ export function CreditsPage() {
         </p>
       </section>
       <section className="parle-groups-section">
+        <h1>Wikizionario</h1>
+        <p className="parle-screen-text">
+          I significati in Statistiche vengono da{" "}
+          <ExternalLink href="https://it.wiktionary.org/">
+            Wikizionario
+          </ExternalLink>
+          , disponibili con licenza CC BY-SA.
+        </p>
+      </section>
+      <section className="parle-groups-section">
         <h1>Wordle</h1>
         <p className="parle-screen-text">
           Il gioco originale è{" "}

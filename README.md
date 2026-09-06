@@ -12,7 +12,10 @@ Siamo così ossessionati da questo gioco che abbiamo voluto correggere i bug
 noti e portarlo a un nuovo livello con i gruppi: classifiche private tra
 amici, giorno dopo giorno.
 
-Il codice di questa versione è in questo repository.
+## Wikizionario
+
+I significati in Statistiche vengono da
+[Wikizionario](https://it.wiktionary.org/), disponibili con licenza CC BY-SA.
 
 ## Wordle
 

@@ -18,6 +18,10 @@ _Avoid_: epoch (as a timestamp)
 The unique five-letter Italian word for one Game Day. The sequence of Puzzles is the live Parle list (same shuffle, same First Game Day).
 _Avoid_: solution, word of the day (as a second official name)
 
+**Gloss**:
+A short Italian meaning of a Puzzle, hidden in STATISTICHE until the Player reveals it, and can be hidden again. Taken from Wikizionario; a form of a lemma uses that lemma’s meaning.
+_Avoid_: definition (as a stored record), dictionary
+
 **Allowed Guess**:
 A five-letter word that may be submitted. The allowed-guess list is larger than the Puzzle list.
 _Avoid_: dictionary (as if there were only one list)

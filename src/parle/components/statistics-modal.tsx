@@ -6,16 +6,21 @@ import {
 } from "../../game-day/game-day"
 import type { GroupTeaser } from "../../group/store"
 import type { Statistics } from "../../statistics/statistics"
+import { GameIcon } from "./game-icon"
 
 export function StatisticsModal({
   stats,
   highlightGuess,
   teasers,
+  puzzle,
+  gloss,
   onShare,
 }: {
   stats: Statistics
   highlightGuess: number | undefined
   teasers: GroupTeaser[]
+  puzzle: string
+  gloss: string | undefined
   onShare: () => void
 }) {
   const maxBar = Math.max(
@@ -79,6 +84,7 @@ export function StatisticsModal({
           </button>
         </div>
       </div>
+      {gloss ? <GlossStrip puzzle={puzzle} gloss={gloss} /> : null}
       {teasers.length > 0 ? (
         <div className="parle-group-teasers">
           {teasers.map((teaser) => (
@@ -96,6 +102,46 @@ export function StatisticsModal({
           ))}
         </div>
       ) : null}
+    </div>
+  )
+}
+
+function GlossStrip({ puzzle, gloss }: { puzzle: string; gloss: string }) {
+  const [revealed, setRevealed] = useState(false)
+  const href = `https://it.wiktionary.org/wiki/${encodeURIComponent(puzzle)}`
+
+  return (
+    <div className="parle-gloss">
+      <a
+        className="parle-gloss-body"
+        data-revealed={revealed}
+        href={href}
+        target="_blank"
+        rel="noreferrer"
+        tabIndex={revealed ? undefined : -1}
+        aria-hidden={!revealed}
+      >
+        <h1>{puzzle}</h1>
+        <p className="parle-gloss-text">{gloss}</p>
+      </a>
+      {revealed ? (
+        <button
+          className="parle-icon-button parle-gloss-hide"
+          type="button"
+          aria-label="Nascondi la parola e il significato"
+          onClick={() => setRevealed(false)}
+        >
+          <GameIcon name="hide" />
+        </button>
+      ) : (
+        <button
+          className="parle-gloss-reveal"
+          type="button"
+          onClick={() => setRevealed(true)}
+        >
+          Mostra la parola e il significato
+        </button>
+      )}
     </div>
   )
 }

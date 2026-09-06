@@ -56,7 +56,7 @@ via `preserve()`. [`docs/adr/0003-host-on-railway.md`](./docs/adr/0003-host-on-r
 
 ## Change
 
-<!-- example: - [inbox] … -->
+- [done] STATISTICHE: Gloss of today’s Puzzle under Condividi (Wikizionario)
 
 ## Fix
 

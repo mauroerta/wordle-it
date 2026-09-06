@@ -94,6 +94,7 @@ export function ParleGame({
   const [bounceRow, setBounceRow] = useState<number | null>(null)
   const [toasts, setToasts] = useState<Toast[]>([])
   const [teasers, setTeasers] = useState<GroupTeaser[]>([])
+  const [gloss, setGloss] = useState<string | undefined>()
   const toastSeq = useRef(0)
   const playRef = useRef(play)
   const draftRef = useRef(draft)
@@ -113,6 +114,23 @@ export function ParleGame({
     document.body.classList.toggle("colorblind", theme.colorblind)
     themeStore.save(theme)
   }, [theme, themeStore])
+
+  useEffect(() => {
+    if (play.status === "in_progress") {
+      setGloss(undefined)
+      return
+    }
+    let cancelled = false
+    // definitions.json is large; load it only after the Play is finished.
+    void import("../puzzle/definition").then(({ glossForPuzzle }) => {
+      if (!cancelled) {
+        setGloss(glossForPuzzle(play.puzzle))
+      }
+    })
+    return () => {
+      cancelled = true
+    }
+  }, [play.status, play.puzzle])
 
   useEffect(() => {
     if (!accountEmail || play.status === "in_progress") {
@@ -387,6 +405,8 @@ export function ParleGame({
               play.status === "won" ? play.guesses.length : undefined
             }
             teasers={teasers}
+            puzzle={play.puzzle}
+            gloss={gloss}
             onShare={() => {
               void onShare()
             }}

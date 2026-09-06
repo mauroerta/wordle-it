@@ -17,7 +17,7 @@ From the live game:
 - After a win: toast, then the STATISTICHE modal (highlight today’s guess-count bar).
 - After a loss: toast with the solution, then the same modal.
 - Coming back the same Game Day when today’s Play is already finished: STATISTICHE is the first thing shown (no delay).
-- Modal contents: Partite, % Vittorie, Vinte di fila, Record di vittorie in fila, Distribuzione dei tentativi, Prossimo PARLE countdown, Condividi.
+- Modal contents: Partite, % Vittorie, Vinte di fila, Record di vittorie in fila, Distribuzione dei tentativi, Prossimo PARLE countdown, Condividi. After a finished Play, a Gloss strip under Condividi, hidden until tapped (Puzzle as heading, one Italian line, link to Wikizionario). An eye-off icon hides it again. Missing Gloss: the strip is omitted.
 - First visit ever: help modal, not stats.
 
 ## Behavior exceptions
@@ -28,7 +28,7 @@ These must **not** copy the live site. See `MODERNIZATION.md`.
 - A game day is a calendar date in Italy, not “exactly 86400000 milliseconds.” That also covers **ora legale** (DST) and **anno bisestile** (leap year).
 - Scores and stats persist on the server for logged-in users (WorkOS + Postgres). The live game keeps them only in `localStorage`.
 - Login / account is a **new surface**. It is not on the live site. Keep the game board and header looking like Parle (help | title | settings). Accedi / Esci live in the existing settings sheet, not a fourth header icon. Auth UI is WorkOS AuthKit hosted (email magic link + Google), in Italian.
-- Groups are a **new surface**. They are not on the live site. Same header (no extra icon). Gruppi lives in Impostazioni. End-of-game STATISTICHE stays as on the live site, plus a small strip under Condividi (name · place · attempts) linking to each Group. Group pages use Parle chrome, type, and colors — not a separate visual language.
+- Groups are a **new surface**. They are not on the live site. Same header (no extra icon). Gruppi lives in Impostazioni. End-of-game STATISTICHE stays as on the live site, plus a Gloss strip and a small Group strip under Condividi (name · place · attempts) linking to each Group. Group pages use Parle chrome, type, and colors — not a separate visual language.
 - Guests can play without an Account. They store Plays on the device. Creating an Account keeps those Plays. Logging into an existing Account replaces Guest Plays with the Account’s. Logging out starts a new empty Guest. Statistics are always computed from Plays.
 - Two devices, same Account: the stored Play is the only board (last write wins). No live sync. Cheating is out of scope.
 - New origin: Players start from zero Plays. Old live-site counters are not imported.
