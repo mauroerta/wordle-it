@@ -12,12 +12,14 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AuthedRouteImport } from './routes/_authed'
 import { Route as CreditsRouteImport } from './routes/credits'
+import { Route as AuthedAccountRouteImport } from './routes/_authed/account'
 import { Route as AuthedGroupsIndexRouteImport } from './routes/_authed/groups/index'
 import { Route as AuthedGroupsSlugRouteImport } from './routes/_authed/groups/$slug'
 import { Route as AuthedInviteTokenRouteImport } from './routes/_authed/invite/$token'
 import { Route as ApiAuthCallbackRouteImport } from './routes/api/auth/callback'
 import { Route as ApiAuthSignInRouteImport } from './routes/api/auth/sign-in'
 import { Route as ApiAuthSignOutRouteImport } from './routes/api/auth/sign-out'
+import { Route as ApiCronNotificationsRouteImport } from './routes/api/cron/notifications'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -32,6 +34,11 @@ const CreditsRoute = CreditsRouteImport.update({
   id: '/credits',
   path: '/credits',
   getParentRoute: () => rootRouteImport,
+} as any)
+const AuthedAccountRoute = AuthedAccountRouteImport.update({
+  id: '/account',
+  path: '/account',
+  getParentRoute: () => AuthedRoute,
 } as any)
 const AuthedGroupsIndexRoute = AuthedGroupsIndexRouteImport.update({
   id: '/groups/',
@@ -63,25 +70,34 @@ const ApiAuthSignOutRoute = ApiAuthSignOutRouteImport.update({
   path: '/api/auth/sign-out',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiCronNotificationsRoute = ApiCronNotificationsRouteImport.update({
+  id: '/api/cron/notifications',
+  path: '/api/cron/notifications',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/credits': typeof CreditsRoute
+  '/account': typeof AuthedAccountRoute
   '/groups/$slug': typeof AuthedGroupsSlugRoute
   '/invite/$token': typeof AuthedInviteTokenRoute
   '/api/auth/callback': typeof ApiAuthCallbackRoute
   '/api/auth/sign-in': typeof ApiAuthSignInRoute
   '/api/auth/sign-out': typeof ApiAuthSignOutRoute
+  '/api/cron/notifications': typeof ApiCronNotificationsRoute
   '/groups/': typeof AuthedGroupsIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/credits': typeof CreditsRoute
+  '/account': typeof AuthedAccountRoute
   '/groups/$slug': typeof AuthedGroupsSlugRoute
   '/invite/$token': typeof AuthedInviteTokenRoute
   '/api/auth/callback': typeof ApiAuthCallbackRoute
   '/api/auth/sign-in': typeof ApiAuthSignInRoute
   '/api/auth/sign-out': typeof ApiAuthSignOutRoute
+  '/api/cron/notifications': typeof ApiCronNotificationsRoute
   '/groups': typeof AuthedGroupsIndexRoute
 }
 export interface FileRoutesById {
@@ -89,11 +105,13 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/_authed': typeof AuthedRouteWithChildren
   '/credits': typeof CreditsRoute
+  '/_authed/account': typeof AuthedAccountRoute
   '/_authed/groups/$slug': typeof AuthedGroupsSlugRoute
   '/_authed/invite/$token': typeof AuthedInviteTokenRoute
   '/api/auth/callback': typeof ApiAuthCallbackRoute
   '/api/auth/sign-in': typeof ApiAuthSignInRoute
   '/api/auth/sign-out': typeof ApiAuthSignOutRoute
+  '/api/cron/notifications': typeof ApiCronNotificationsRoute
   '/_authed/groups/': typeof AuthedGroupsIndexRoute
 }
 export interface FileRouteTypes {
@@ -101,32 +119,38 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/credits'
+    | '/account'
     | '/groups/$slug'
     | '/invite/$token'
     | '/api/auth/callback'
     | '/api/auth/sign-in'
     | '/api/auth/sign-out'
+    | '/api/cron/notifications'
     | '/groups/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
     | '/credits'
+    | '/account'
     | '/groups/$slug'
     | '/invite/$token'
     | '/api/auth/callback'
     | '/api/auth/sign-in'
     | '/api/auth/sign-out'
+    | '/api/cron/notifications'
     | '/groups'
   id:
     | '__root__'
     | '/'
     | '/_authed'
     | '/credits'
+    | '/_authed/account'
     | '/_authed/groups/$slug'
     | '/_authed/invite/$token'
     | '/api/auth/callback'
     | '/api/auth/sign-in'
     | '/api/auth/sign-out'
+    | '/api/cron/notifications'
     | '/_authed/groups/'
   fileRoutesById: FileRoutesById
 }
@@ -137,6 +161,7 @@ export interface RootRouteChildren {
   ApiAuthCallbackRoute: typeof ApiAuthCallbackRoute
   ApiAuthSignInRoute: typeof ApiAuthSignInRoute
   ApiAuthSignOutRoute: typeof ApiAuthSignOutRoute
+  ApiCronNotificationsRoute: typeof ApiCronNotificationsRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -161,6 +186,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/credits'
       preLoaderRoute: typeof CreditsRouteImport
       parentRoute: typeof rootRouteImport
+    }
+    '/_authed/account': {
+      id: '/_authed/account'
+      path: '/account'
+      fullPath: '/account'
+      preLoaderRoute: typeof AuthedAccountRouteImport
+      parentRoute: typeof AuthedRoute
     }
     '/_authed/groups/': {
       id: '/_authed/groups/'
@@ -204,16 +236,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiAuthSignOutRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/cron/notifications': {
+      id: '/api/cron/notifications'
+      path: '/api/cron/notifications'
+      fullPath: '/api/cron/notifications'
+      preLoaderRoute: typeof ApiCronNotificationsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
 interface AuthedRouteChildren {
+  AuthedAccountRoute: typeof AuthedAccountRoute
   AuthedGroupsSlugRoute: typeof AuthedGroupsSlugRoute
   AuthedInviteTokenRoute: typeof AuthedInviteTokenRoute
   AuthedGroupsIndexRoute: typeof AuthedGroupsIndexRoute
 }
 
 const AuthedRouteChildren: AuthedRouteChildren = {
+  AuthedAccountRoute: AuthedAccountRoute,
   AuthedGroupsSlugRoute: AuthedGroupsSlugRoute,
   AuthedInviteTokenRoute: AuthedInviteTokenRoute,
   AuthedGroupsIndexRoute: AuthedGroupsIndexRoute,
@@ -229,6 +270,7 @@ const rootRouteChildren: RootRouteChildren = {
   ApiAuthCallbackRoute: ApiAuthCallbackRoute,
   ApiAuthSignInRoute: ApiAuthSignInRoute,
   ApiAuthSignOutRoute: ApiAuthSignOutRoute,
+  ApiCronNotificationsRoute: ApiCronNotificationsRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

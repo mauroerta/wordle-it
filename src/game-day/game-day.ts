@@ -10,6 +10,10 @@ export function calendarDateInRome(at: Date): string {
   }).format(at)
 }
 
+export function hourInRome(at: Date): number {
+  return romeDateTime(at).hour
+}
+
 export function daysBetweenGameDays(from: string, to: string): number {
   return utcCalendarDay(to) - utcCalendarDay(from)
 }

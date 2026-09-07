@@ -312,11 +312,6 @@ export function ParleGame({
     }
   }
 
-  function onSignOut() {
-    player.onSignOut()
-    window.location.href = "/api/auth/sign-out"
-  }
-
   async function onShare() {
     const text = shareText({
       evaluations: play.evaluations,
@@ -435,7 +430,6 @@ export function ParleGame({
             onHardMode={onHardMode}
             onNightmode={(nightmode) => setTheme({ ...theme, nightmode })}
             onColorblind={(colorblind) => setTheme({ ...theme, colorblind })}
-            onSignOut={onSignOut}
             onInstallApp={pwaInstall.openPrompt}
           />
         </PageOverlay>

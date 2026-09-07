@@ -1,4 +1,4 @@
-const CACHE = "parle-v1"
+const CACHE = "parle-v3"
 
 const PRECACHE = [
   "/",
@@ -29,6 +29,15 @@ self.addEventListener("activate", (event) => {
   )
 })
 
+self.addEventListener("push", (event) => {
+  event.waitUntil(showPushNotification(event))
+})
+
+self.addEventListener("notificationclick", (event) => {
+  event.notification.close()
+  event.waitUntil(openParle())
+})
+
 self.addEventListener("fetch", (event) => {
   const request = event.request
   if (request.method !== "GET") {
@@ -36,6 +45,10 @@ self.addEventListener("fetch", (event) => {
   }
   const url = new URL(request.url)
   if (url.origin !== self.location.origin) {
+    return
+  }
+  // Leave Vite / Nitro module graph alone (dev and prod hashed entrypoints).
+  if (isDevModule(url)) {
     return
   }
   if (url.pathname.startsWith("/api/")) {
@@ -49,6 +62,61 @@ self.addEventListener("fetch", (event) => {
     event.respondWith(cacheFirst(request))
   }
 })
+
+function isDevModule(url) {
+  if (url.searchParams.has("import")) {
+    return true
+  }
+  const path = url.pathname
+  return (
+    path.startsWith("/src/") ||
+    path.startsWith("/node_modules/") ||
+    path.startsWith("/@") ||
+    path.startsWith("/.vite/")
+  )
+}
+
+async function showPushNotification(event) {
+  let title = "Par🇮🇹le"
+  let body = "Nuovo aggiornamento"
+  if (event.data) {
+    try {
+      const payload = event.data.json()
+      if (typeof payload.title === "string") {
+        title = payload.title
+      }
+      if (typeof payload.body === "string") {
+        body = payload.body
+      }
+    } catch {
+      body = event.data.text()
+    }
+  }
+  await self.registration.showNotification(title, {
+    body,
+    icon: "/parle_logo_192x192.png",
+    badge: "/parle_logo_192x192.png",
+    data: { url: "/" },
+  })
+}
+
+async function openParle() {
+  const url = "/"
+  const windows = await self.clients.matchAll({
+    type: "window",
+    includeUncontrolled: true,
+  })
+  for (const client of windows) {
+    if ("focus" in client) {
+      await client.focus()
+      if ("navigate" in client) {
+        await client.navigate(url)
+      }
+      return
+    }
+  }
+  await self.clients.openWindow(url)
+}
 
 function isStatic(pathname) {
   return /\.(?:js|css|png|ico|webp|woff2?|ttf|json|map)$/i.test(pathname)

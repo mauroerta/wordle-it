@@ -52,6 +52,16 @@ _Avoid_: anonymous user, unauthenticated user
 The identity a Player can create. It owns that Player’s Plays across devices. Its name is the WorkOS full name; without one, the part of the email before `@`; never the full address (Members see it).
 _Avoid_: user, login (as the noun for the person)
 
+**Notification**:
+An Account-only reminder about today’s Puzzle. Guests do not get Notifications. Managed on the Account page. A master switch mutes all; each kind can be on or off under it. Default off. Never includes the Puzzle word.
+_Avoid_: alert, push (as the product name), profile notification
+
+**New Puzzle Notification**:
+A Notification at Europe/Rome midnight that a new Puzzle is ready.
+
+**Hurry-up Notification**:
+A Notification at 23:00 Europe/Rome when the Account has no finished Play (won or lost) for today’s Game Day. In progress counts as unfinished.
+
 ### Groups
 
 **Group**:

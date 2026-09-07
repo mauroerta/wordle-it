@@ -37,8 +37,11 @@ Railway graph lives in [`.railway/railway.ts`](https://docs.railway.com/infrastr
 Compose is local Postgres. Drizzle is schema. `railway config apply` is the graph.
 Environments: `staging` and `production`, both on `main`. Push deploys staging.
 Production is a manual deploy after staging is good. Separate Postgres per
-environment. Secrets (WorkOS, including `WORKOS_REDIRECT_URI`) stay on Railway
-via `preserve()`. [`docs/adr/0003-host-on-railway.md`](./docs/adr/0003-host-on-railway.md)
+environment. Secrets (WorkOS, including `WORKOS_REDIRECT_URI`, plus VAPID_* and
+`CRON_SECRET`) stay on Railway via `preserve()`. Notification cron is
+`notifications-cron` (hourly UTC → Europe/Rome midnight / 23:00); set
+`PARLE_URL` on that service to the public https origin of `parle`.
+[`docs/adr/0003-host-on-railway.md`](docs/adr/0003-host-on-railway.md).
 
 ## Current snapshot (2026-09-03)
 
@@ -53,6 +56,7 @@ via `preserve()`. [`docs/adr/0003-host-on-railway.md`](./docs/adr/0003-host-on-r
 ## Do
 
 - [done] Groups: private Account circles, Today’s ranking, Podiums, Invite, STATISTICHE strip, `/groups`. [ADR 0005](docs/adr/0005-groups-are-a-lens.md)
+- [done] Notifications (Account-only, Web Push): master switch + New Puzzle at Rome midnight + Hurry-up at 23:00 Rome for unfinished Plays; prefs on `/account`; no Puzzle word in payloads. See CONTEXT.md.
 
 ## Change
 
