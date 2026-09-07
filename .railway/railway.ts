@@ -8,7 +8,7 @@ import {
   service,
 } from "railway/iac"
 
-export default defineRailway(() => {
+export default defineRailway((ctx) => {
   const db = postgres("postgres")
   const source = github("mauroerta/wordle-it", { branch: "main" })
 
@@ -17,7 +17,10 @@ export default defineRailway(() => {
     build: "pnpm build",
     start: "pnpm start",
     replicas: { "europe-west4-drams3a": 1 },
-    domains: ["parole.mauroerta.me"],
+    // Custom domains cannot be registered via IaC; production already has this in the dashboard.
+    ...(ctx.isEnvironment("production")
+      ? { domains: ["parole.mauroerta.me"] as const }
+      : {}),
     env: {
       DATABASE_URL: db.env.DATABASE_URL,
       WORKOS_CLIENT_ID: preserve(),
