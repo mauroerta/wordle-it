@@ -18,7 +18,7 @@ From the live game:
 - After a loss: toast with the solution, then the same modal.
 - Coming back the same Game Day when today’s Play is already finished: STATISTICHE is the first thing shown (no delay).
 - Modal contents: Partite, % Vittorie, Vinte di fila, Record di vittorie in fila, Distribuzione dei tentativi, Prossimo PARLE countdown, Condividi. After a finished Play, a Gloss strip under Condividi, hidden until tapped (Puzzle as heading, one Italian line, link to Wikizionario). An eye-off icon hides it again. Missing Gloss: the strip is omitted.
-- First visit ever: help modal, not stats.
+- First visit ever: help modal, not stats. Dismissing it persists on the device; it must not auto-open again (the help icon still opens it).
 
 ## Behavior exceptions
 

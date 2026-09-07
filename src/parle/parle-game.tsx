@@ -18,6 +18,7 @@ import { usePwaInstall } from "../pwa/hooks/use-pwa-install"
 import { Board } from "./components/board"
 import { GameIcon } from "./components/game-icon"
 import { HelpContent } from "./components/help-content"
+import { createHelpDismissal } from "./help-dismissal"
 import { Keyboard } from "./components/keyboard"
 import { ModalOverlay, PageOverlay } from "./components/overlays"
 import { SettingsPage } from "./components/settings-page"
@@ -63,6 +64,10 @@ export function ParleGame({
       }),
     []
   )
+  const helpDismissal = useMemo(
+    () => createHelpDismissal({ storage: window.localStorage }),
+    []
+  )
 
   const now = new Date()
   const gameDay = calendarDateInRome(now)
@@ -86,7 +91,7 @@ export function ParleGame({
     () => play.status !== "in_progress"
   )
   const [showHelpModal, setShowHelpModal] = useState(
-    () => !player.hasEverPlayed()
+    () => !helpDismissal.isDismissed() && !player.hasEverPlayed()
   )
   const [canInput, setCanInput] = useState(() => play.status === "in_progress")
   const [invalid, setInvalid] = useState(false)
@@ -157,12 +162,17 @@ export function ParleGame({
   }, [accountEmail, play.status, play.gameDay])
 
   useEffect(() => {
-    if (!player.hasEverPlayed()) {
-      const id = window.setTimeout(() => setShowHelpModal(true), 100)
-      return () => window.clearTimeout(id)
+    if (helpDismissal.isDismissed() || player.hasEverPlayed()) {
+      return undefined
     }
-    return undefined
-  }, [player])
+    const id = window.setTimeout(() => setShowHelpModal(true), 100)
+    return () => window.clearTimeout(id)
+  }, [helpDismissal, player])
+
+  function dismissHelpModal() {
+    helpDismissal.dismiss()
+    setShowHelpModal(false)
+  }
 
   function addToast(toast: Omit<Toast, "id">) {
     const id = toastSeq.current + 1
@@ -388,10 +398,7 @@ export function ParleGame({
       />
       <Keyboard letterMarks={marks} onKey={onKey} />
       {showHelpModal ? (
-        <ModalOverlay
-          title="Come giocare"
-          onClose={() => setShowHelpModal(false)}
-        >
+        <ModalOverlay title="Come giocare" onClose={dismissHelpModal}>
           <HelpContent />
         </ModalOverlay>
       ) : null}
