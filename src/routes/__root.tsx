@@ -29,7 +29,7 @@ export const Route = createRootRoute({
       { name: "theme-color", content: "#6aaa64" },
       { name: "mobile-web-app-capable", content: "yes" },
       { name: "apple-mobile-web-app-capable", content: "yes" },
-      { name: "apple-mobile-web-app-title", content: "Parle" },
+      { name: "apple-mobile-web-app-title", content: "Par🇮🇹le" },
       { name: "apple-mobile-web-app-status-bar-style", content: "default" },
       {
         property: "og:title",
