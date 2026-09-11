@@ -16,7 +16,8 @@ export const Route = createRootRoute({
       { charSet: "utf-8" },
       {
         name: "viewport",
-        content: "width=device-width, initial-scale=1.0, user-scalable=no",
+        content:
+          "width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no",
       },
       {
         title: "Par🇮🇹le - Un gioco di parole al giorno (Wordle in italiano)",
