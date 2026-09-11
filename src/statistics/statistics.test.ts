@@ -60,6 +60,40 @@ describe("statisticsFromPlays", () => {
     expect(stats.currentStreak).toBe(0)
     expect(stats.maxStreak).toBe(1)
   })
+
+  test("a loss today clears the current streak", () => {
+    const stats = statisticsFromPlays({
+      plays: [won("2026-08-28", 1), won("2026-08-29", 1), lost("2026-08-30")],
+      today: "2026-08-30",
+    })
+    expect(stats.currentStreak).toBe(0)
+    expect(stats.maxStreak).toBe(2)
+  })
+
+  test("not having finished today keeps yesterday's streak", () => {
+    const stats = statisticsFromPlays({
+      plays: [won("2026-08-28", 1), won("2026-08-29", 1)],
+      today: "2026-08-30",
+    })
+    expect(stats.currentStreak).toBe(2)
+  })
+
+  test("three wins then not played today stays 3; a win makes 4", () => {
+    const prior = [
+      won("2026-09-08", 1),
+      won("2026-09-09", 1),
+      won("2026-09-10", 1),
+    ]
+    expect(
+      statisticsFromPlays({ plays: prior, today: "2026-09-11" }).currentStreak
+    ).toBe(3)
+    expect(
+      statisticsFromPlays({
+        plays: [...prior, won("2026-09-11", 1)],
+        today: "2026-09-11",
+      }).currentStreak
+    ).toBe(4)
+  })
 })
 
 describe("averageAttemptsFromPlays", () => {

@@ -1,5 +1,5 @@
 import type { Play } from "../play/play"
-import { daysBetweenGameDays } from "../game-day/game-day"
+import { addCalendarDays, daysBetweenGameDays } from "../game-day/game-day"
 
 export type Statistics = {
   gamesPlayed: number
@@ -58,7 +58,9 @@ export function statisticsFromPlays({
     gamesPlayed === 0 ? 0 : Math.round((gamesWon / gamesPlayed) * 100)
 
   const wonDays = new Set(wins.map((play) => play.gameDay))
-  const currentStreak = streakEndingNear({ wonDays, today })
+  const todayFinished = finished.find((play) => play.gameDay === today)
+  const currentStreak =
+    todayFinished?.status === "lost" ? 0 : streakEndingNear({ wonDays, today })
   const maxStreak = longestStreak(wonDays)
 
   return {
@@ -81,7 +83,8 @@ function streakEndingNear({
   if (wonDays.has(today)) {
     return countBack({ wonDays, from: today })
   }
-  const yesterday = previousDay(today)
+  // Not finished today: streak stays alive through yesterday's win.
+  const yesterday = addCalendarDays(today, -1)
   if (wonDays.has(yesterday)) {
     return countBack({ wonDays, from: yesterday })
   }
@@ -99,7 +102,7 @@ function countBack({
   let day = from
   while (wonDays.has(day)) {
     streak += 1
-    day = previousDay(day)
+    day = addCalendarDays(day, -1)
   }
   return streak
 }
@@ -119,16 +122,4 @@ function longestStreak(wonDays: Set<string>): number {
     prev = day
   }
   return best
-}
-
-function previousDay(isoDate: string): string {
-  const utc = Date.UTC(
-    Number(isoDate.slice(0, 4)),
-    Number(isoDate.slice(5, 7)) - 1,
-    Number(isoDate.slice(8, 10)) - 1
-  )
-  const next = new Date(utc)
-  const month = String(next.getUTCMonth() + 1).padStart(2, "0")
-  const day = String(next.getUTCDate()).padStart(2, "0")
-  return `${next.getUTCFullYear()}-${month}-${day}`
 }
