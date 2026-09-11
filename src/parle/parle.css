@@ -543,6 +543,20 @@ button.parle-account-action {
   padding: 16px 0;
 }
 
+.parle-setting-section-title {
+  margin: 32px 0 0;
+  padding: 0;
+  font-size: 14px;
+  font-weight: 700;
+  line-height: normal;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.parle-settings section[data-danger] > .parle-setting-section-title {
+  color: var(--destructive);
+}
+
 .parle-setting > div:first-child {
   padding-right: 8px;
 }
@@ -1226,5 +1240,9 @@ button.parle-account-action {
 
   .parle-setting {
     padding: 16px;
+  }
+
+  .parle-setting-section-title {
+    padding: 0 16px;
   }
 }

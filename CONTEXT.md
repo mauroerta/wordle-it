@@ -49,7 +49,7 @@ A Player without an Account. Creating an Account is this Player becoming that Ac
 _Avoid_: anonymous user, unauthenticated user
 
 **Account**:
-The identity a Player can create. It owns that Player’s Plays across devices. Its name is the WorkOS full name; without one, the part of the email before `@`; never the full address (Members see it).
+The identity a Player can create. It owns that Player’s Plays across devices. Its name is the WorkOS full name; without one, the part of the email before `@`; never the full address (Members see it). Deleting an Account permanently removes its identity, Plays, Notifications, and Group memberships; ownership passes to the next Member, and a Group with no Members is deleted.
 _Avoid_: user, login (as the noun for the person)
 
 **Notification**:

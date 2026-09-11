@@ -57,6 +57,7 @@ environment. Secrets (WorkOS, including `WORKOS_REDIRECT_URI`, plus VAPID_* and
 
 - [done] Groups: private Account circles, Today’s ranking, Podiums, Invite, STATISTICHE strip, `/groups`. [ADR 0005](docs/adr/0005-groups-are-a-lens.md)
 - [done] Notifications (Account-only, Web Push): master switch + New Puzzle at Rome midnight + Hurry-up at 23:00 Rome for unfinished Plays; prefs on `/account`; no Puzzle word in payloads. See CONTEXT.md.
+- [done] Account deletion: permanent WorkOS identity and Parle data removal, with Group ownership transferred to the next Member.
 
 ## Change
 

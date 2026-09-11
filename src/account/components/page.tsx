@@ -1,6 +1,22 @@
+import { useState } from "react"
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog"
+import { Alert, AlertDescription } from "@/components/ui/alert"
+import { Button } from "@/components/ui/button"
+import { Spinner } from "@/components/ui/spinner"
 import { PageChrome } from "../../chrome/page-chrome"
 import { useNotificationSettings } from "../../notification/hooks/use-notification-settings"
 import { createPlayer } from "../../player/player"
+import { deleteAccount } from "../mutations/account"
 import {
   ParleSwitch,
   SettingRow,
@@ -9,10 +25,25 @@ import {
 
 export function AccountPage({ accountEmail }: { accountEmail: string }) {
   const notifications = useNotificationSettings({ signedIn: true })
+  const [deleting, setDeleting] = useState(false)
+  const [deleteError, setDeleteError] = useState(false)
 
   function onSignOut() {
     createPlayer({ storage: window.localStorage }).onSignOut()
     window.location.href = "/api/auth/sign-out"
+  }
+
+  async function onDeleteAccount() {
+    setDeleting(true)
+    setDeleteError(false)
+    try {
+      await deleteAccount()
+      createPlayer({ storage: window.localStorage }).onSignOut()
+      window.location.href = "/"
+    } catch {
+      setDeleteError(true)
+      setDeleting(false)
+    }
   }
 
   return (
@@ -82,6 +113,58 @@ export function AccountPage({ accountEmail }: { accountEmail: string }) {
               label="Promemoria alle 23"
               onCheckedChange={notifications.setHurryUp}
             />
+          </SettingRow>
+        </SettingSection>
+        <SettingSection title="Zona pericolosa" danger>
+          <SettingRow
+            title="Elimina account"
+            description="Elimina definitivamente i tuoi dati da Par🇮🇹le"
+          >
+            <AlertDialog>
+              <AlertDialogTrigger
+                render={<Button variant="destructive">Elimina</Button>}
+                onClick={() => setDeleteError(false)}
+              />
+              <AlertDialogContent size="sm">
+                <AlertDialogHeader>
+                  <AlertDialogTitle>Eliminare il tuo account?</AlertDialogTitle>
+                  <AlertDialogDescription>
+                    Partite, statistiche, notifiche e appartenenze ai gruppi
+                    verranno eliminate definitivamente. Questa azione non può
+                    essere annullata.
+                  </AlertDialogDescription>
+                </AlertDialogHeader>
+                {deleteError ? (
+                  <Alert variant="destructive">
+                    <AlertDescription>
+                      Non è stato possibile eliminare l’account. Riprova.
+                    </AlertDescription>
+                  </Alert>
+                ) : null}
+                <AlertDialogFooter>
+                  <AlertDialogCancel disabled={deleting}>
+                    Annulla
+                  </AlertDialogCancel>
+                  <AlertDialogAction
+                    variant="destructive"
+                    disabled={deleting}
+                    onClick={(event) => {
+                      event.preventDefault()
+                      void onDeleteAccount()
+                    }}
+                  >
+                    {deleting ? (
+                      <>
+                        <Spinner data-icon="inline-start" />
+                        Eliminazione…
+                      </>
+                    ) : (
+                      "Elimina account"
+                    )}
+                  </AlertDialogAction>
+                </AlertDialogFooter>
+              </AlertDialogContent>
+            </AlertDialog>
           </SettingRow>
         </SettingSection>
       </div>

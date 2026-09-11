@@ -31,9 +31,18 @@ export function SettingRow({
   )
 }
 
-export function SettingSection({ children }: { children: ReactNode }) {
+export function SettingSection({
+  children,
+  title,
+  danger,
+}: {
+  children: ReactNode
+  title?: string
+  danger?: boolean
+}) {
   return (
-    <section>
+    <section data-danger={danger ? "" : undefined}>
+      {title ? <h2 className="parle-setting-section-title">{title}</h2> : null}
       <FieldGroup className="gap-0">{children}</FieldGroup>
     </section>
   )
