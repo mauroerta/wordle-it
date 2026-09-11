@@ -1,4 +1,5 @@
 import { createServerFn } from "@tanstack/react-start"
+import { deleteCookie } from "@tanstack/react-start/server"
 import { getAuth } from "@workos/authkit-tanstack-react-start"
 
 export const deleteAccount = createServerFn({ method: "POST" }).handler(
@@ -22,7 +23,6 @@ export const deleteAccount = createServerFn({ method: "POST" }).handler(
       }
     }
 
-    const { deleteCookie } = await import("@tanstack/react-start/server")
     deleteCookie(process.env.WORKOS_COOKIE_NAME ?? "wos-session", {
       path: "/",
       domain: process.env.WORKOS_COOKIE_DOMAIN || undefined,
