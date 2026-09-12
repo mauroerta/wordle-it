@@ -81,7 +81,7 @@ The secret link that lets an Account join a Group. One link per Group. Kick does
 _Avoid_: invite code (as a second official name), referral
 
 **Today’s ranking**:
-Members ordered for one Game Day: wins by fewer attempts, then losses as X, then not played (in progress counts as not played). Ties share a rank. Computed from Plays. Visible without having played today. No emoji grids.
+Members ordered for one Game Day: wins by fewer attempts, then who finished first on a draw, then losses as X, then not played (in progress counts as not played). Places are unique. The Group page and share show only the first three (podium); teasers still use the full ranking for the viewer’s place. Computed from Plays. Visible without having played today. Share uses medal emojis for the podium. No emoji grids of guesses.
 _Avoid_: leaderboard, scoreboard, Oggi (as the English term)
 
 **Podium**:

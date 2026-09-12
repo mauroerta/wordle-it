@@ -1018,8 +1018,31 @@ button.parle-account-action {
   gap: 8px;
 }
 
+.parle-groups-section-title {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  min-width: 0;
+}
+
 .parle-groups-section-head h1 {
   min-width: 0;
+}
+
+.parle-groups-info {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  border: none;
+  background: transparent;
+  color: var(--color-tone-2);
+  cursor: pointer;
+}
+
+.parle-groups-info svg {
+  width: 16px;
+  height: 16px;
 }
 
 .parle-podiums {
@@ -1084,8 +1107,9 @@ button.parle-account-action {
 }
 
 .parle-rank-place {
-  width: 2.2em;
+  width: 1.75rem;
   color: var(--color-tone-2);
+  text-align: center;
 }
 
 .parle-rank-name {

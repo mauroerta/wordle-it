@@ -15,6 +15,19 @@ export type TodayMember = {
   accountId: string
   name: string
   play: Play | undefined
+  /** When the Play finished (won/lost). Earlier wins a same-attempts draw. */
+  finishedAt?: number
+}
+
+export const TODAY_PODIUM_SIZE = 3
+
+const TODAY_MEDALS = ["🥇", "🥈", "🥉"] as const
+
+export function todayMedal(place: number): string | undefined {
+  if (place < 1 || place > TODAY_PODIUM_SIZE) {
+    return undefined
+  }
+  return TODAY_MEDALS[place - 1]
 }
 
 function bucketOf(play: Play | undefined): TodayBucket {
@@ -63,42 +76,35 @@ export function todayRanking({
         return guessDelta
       }
     }
+    if (bucketA !== "not_played") {
+      const timeA = a.finishedAt ?? Number.POSITIVE_INFINITY
+      const timeB = b.finishedAt ?? Number.POSITIVE_INFINITY
+      if (timeA !== timeB) {
+        return timeA - timeB
+      }
+    }
     return a.name.localeCompare(b.name, "it")
   })
 
-  const rows: TodayRow[] = []
-  let i = 0
-  while (i < sorted.length) {
-    let j = i + 1
-    while (j < sorted.length && sameTodayRank(sorted[i], sorted[j])) {
-      j += 1
+  return sorted.map((member, index) => {
+    const bucket = bucketOf(member.play)
+    return {
+      accountId: member.accountId,
+      name: member.name,
+      place: index + 1,
+      bucket,
+      attemptsLabel: attemptsLabel({ play: member.play }),
+      hardMode: member.play?.hardMode === true && bucket !== "not_played",
     }
-    const place = i + 1
-    for (let k = i; k < j; k++) {
-      const member = sorted[k]
-      const bucket = bucketOf(member.play)
-      rows.push({
-        accountId: member.accountId,
-        name: member.name,
-        place,
-        bucket,
-        attemptsLabel: attemptsLabel({ play: member.play }),
-        hardMode: member.play?.hardMode === true && bucket !== "not_played",
-      })
-    }
-    i = j
-  }
-  return rows
+  })
 }
 
-function sameTodayRank(a: TodayMember, b: TodayMember): boolean {
-  const bucketA = bucketOf(a.play)
-  const bucketB = bucketOf(b.play)
-  if (bucketA !== bucketB) {
-    return false
-  }
-  if (bucketA === "won") {
-    return a.play?.guesses.length === b.play?.guesses.length
-  }
-  return true
+export function todayPodium({
+  members,
+}: {
+  members: TodayMember[]
+}): TodayRow[] {
+  return todayRanking({ members }).filter(
+    (row) => row.place <= TODAY_PODIUM_SIZE
+  )
 }

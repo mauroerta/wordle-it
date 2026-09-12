@@ -1,9 +1,16 @@
 import { useState } from "react"
 import type { FormEvent } from "react"
 import { useRouter } from "@tanstack/react-router"
+import { InfoIcon } from "lucide-react"
 import { Alert, AlertDescription } from "@/components/ui/alert"
 import { Field, FieldGroup, FieldLabel } from "@/components/ui/field"
 import { Input } from "@/components/ui/input"
+import {
+  Popover,
+  PopoverContent,
+  PopoverDescription,
+  PopoverTrigger,
+} from "@/components/ui/popover"
 import { gameDayIndex } from "../../game-day/game-day"
 import { shareOrCopy } from "../../share/share-or-copy"
 import { invitePath } from "../invite"
@@ -19,6 +26,7 @@ import {
 import { formatPodiumValue, podiumLabel } from "../ranking/podium"
 import type { PodiumMetric } from "../ranking/podium"
 import { shareTodayText, sharePodiumText } from "../ranking/share"
+import { todayMedal } from "../ranking/today"
 import type { GroupPage } from "../store"
 import { PageChrome } from "../../chrome/page-chrome"
 import { ConfirmDialog } from "./confirm-dialog"
@@ -182,7 +190,30 @@ export function GroupDetailPage({
       ) : null}
       <section className="parle-groups-section">
         <div className="parle-groups-section-head">
-          <h1>Oggi</h1>
+          <div className="parle-groups-section-title">
+            <h1>Oggi</h1>
+            <Popover>
+              <PopoverTrigger
+                type="button"
+                className="parle-groups-info"
+                aria-label="Come funziona la classifica di oggi"
+                openOnHover
+                delay={0}
+              >
+                <InfoIcon aria-hidden />
+              </PopoverTrigger>
+              <PopoverContent
+                side="bottom"
+                align="start"
+                className="w-auto max-w-xs p-3"
+              >
+                <PopoverDescription>
+                  Solo i primi tre. Vince chi risolve con meno tentativi; a
+                  parità, chi finisce prima.
+                </PopoverDescription>
+              </PopoverContent>
+            </Popover>
+          </div>
           <button
             className="parle-groups-share"
             type="button"
@@ -202,7 +233,9 @@ export function GroupDetailPage({
                 row.accountId === page.viewerAccountId ? "true" : undefined
               }
             >
-              <span className="parle-rank-place">{row.place}°</span>
+              <span className="parle-rank-place" aria-label={`${row.place}°`}>
+                {todayMedal(row.place) ?? `${row.place}°`}
+              </span>
               <span className="parle-rank-name">{row.name}</span>
               <span className="parle-rank-value">{row.attemptsLabel}</span>
             </li>

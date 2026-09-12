@@ -7,7 +7,7 @@ import { joinDeniedReason, successorOwnerId } from "./membership"
 import type { MemberRole } from "./membership"
 import { podium, rankMetric, PODIUM_METRICS } from "./ranking/podium"
 import type { PodiumMetric, PodiumRow } from "./ranking/podium"
-import { attemptsLabel, todayRanking } from "./ranking/today"
+import { attemptsLabel, todayPodium, todayRanking } from "./ranking/today"
 import type { TodayRow } from "./ranking/today"
 import { groupBlocks, groupMembers, groups } from "./schema"
 import { slugFromName, uniqueSlug } from "./slug"
@@ -44,12 +44,14 @@ export type GroupPage = {
 type Tx = Parameters<Parameters<Db["transaction"]>[0]>[0]
 type Conn = Db | Tx
 
+type LensPlay = Play & { updatedAt: Date }
+
 type LensMember = {
   accountId: string
   name: string
   role: MemberRole
   joinedAt: Date
-  plays: Play[]
+  plays: LensPlay[]
 }
 
 const SLUG_ATTEMPTS = 3
@@ -358,7 +360,7 @@ export function createGroups({ db }: { db: Db }) {
         (member) => member.accountId === accountId && member.role === "owner"
       ),
       viewerAccountId: accountId,
-      today: todayRanking({ members: todayMembers({ members, today }) }),
+      today: todayPodium({ members: todayMembers({ members, today }) }),
       podiums: PODIUM_METRICS.map((metric) => ({
         metric,
         rows: podium({ members, today, metric }),
@@ -423,7 +425,7 @@ export function createGroups({ db }: { db: Db }) {
                 gameDay === undefined ? undefined : eq(plays.gameDay, gameDay)
               )
             )
-    const playsByAccount = new Map<string, Play[]>()
+    const playsByAccount = new Map<string, LensPlay[]>()
     for (const row of playRows) {
       const list = playsByAccount.get(row.accountId) ?? []
       list.push({
@@ -433,6 +435,7 @@ export function createGroups({ db }: { db: Db }) {
         evaluations: row.evaluations,
         status: row.status,
         hardMode: row.hardMode,
+        updatedAt: row.updatedAt,
       })
       playsByAccount.set(row.accountId, list)
     }
@@ -559,11 +562,17 @@ function todayMembers({
   members: LensMember[]
   today: string
 }) {
-  return members.map((member) => ({
-    accountId: member.accountId,
-    name: member.name,
-    play: member.plays.find((play) => play.gameDay === today),
-  }))
+  return members.map((member) => {
+    const play = member.plays.find((item) => item.gameDay === today)
+    const finished =
+      play !== undefined && (play.status === "won" || play.status === "lost")
+    return {
+      accountId: member.accountId,
+      name: member.name,
+      play,
+      finishedAt: finished ? play.updatedAt.getTime() : undefined,
+    }
+  })
 }
 
 // A viewer missing from the ranking sits last.

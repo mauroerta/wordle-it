@@ -3,7 +3,7 @@ import type { TodayRow } from "./today"
 import { shareTodayText, sharePodiumText } from "./share"
 
 describe("shareTodayText", () => {
-  test("formats today’s roster as chat text", () => {
+  test("shares only the podium with medal emojis", () => {
     const rows: TodayRow[] = [
       {
         accountId: "a",
@@ -16,15 +16,23 @@ describe("shareTodayText", () => {
       {
         accountId: "m",
         name: "Mauro Rossi",
-        place: 1,
+        place: 2,
         bucket: "won",
         attemptsLabel: "3/6",
         hardMode: false,
       },
       {
+        accountId: "l",
+        name: "Luca Verdi",
+        place: 3,
+        bucket: "lost",
+        attemptsLabel: "X/6",
+        hardMode: false,
+      },
+      {
         accountId: "g",
         name: "Giulia Neri",
-        place: 3,
+        place: 4,
         bucket: "not_played",
         attemptsLabel: "—",
         hardMode: false,
@@ -33,7 +41,7 @@ describe("shareTodayText", () => {
     expect(
       shareTodayText({ groupName: "Famiglia Rossi", dayOffset: 1700, rows })
     ).toBe(
-      "Par🇮🇹le n°1700 · Famiglia Rossi\n\n1. Anna Bianchi  3/6*\n1. Mauro Rossi  3/6\n3. Giulia Neri  —"
+      "Par🇮🇹le n°1700 · Famiglia Rossi\n\n🥇 Anna Bianchi  3/6*\n🥈 Mauro Rossi  3/6\n🥉 Luca Verdi  X/6"
     )
   })
 })

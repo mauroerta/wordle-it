@@ -1,8 +1,10 @@
 import { beforeAll, beforeEach, describe, expect, test } from "vitest"
+import { and, eq } from "drizzle-orm"
 import type { Db } from "../db/db"
 import { createTestDb, truncateAll } from "../db/test-db"
 import type { Play } from "../play/play"
 import { createAccountPlays, ensureAccount } from "../player/account"
+import { plays } from "../player/schema"
 import { createGroups } from "./store"
 
 const TODAY = "2026-09-03"
@@ -31,9 +33,9 @@ async function account(id: string, name: string) {
   await ensureAccount({ db, accountId: id, name })
 }
 
-async function play(accountId: string, ...plays: Play[]) {
+async function play(accountId: string, ...items: Play[]) {
   const store = createAccountPlays({ db, accountId })
-  for (const item of plays) {
+  for (const item of items) {
     await store.savePlay(item)
   }
 }
@@ -237,14 +239,22 @@ describe("lens", () => {
     await play("mauro", won("2026-09-02", 3), won(TODAY, 4))
     await play("anna", lost("2026-09-02"), won(TODAY, 4))
     await play("luca", { ...won(TODAY, 2), status: "in_progress" })
+    await db
+      .update(plays)
+      .set({ updatedAt: new Date("2026-09-03T08:00:00Z") })
+      .where(and(eq(plays.accountId, "mauro"), eq(plays.gameDay, TODAY)))
+    await db
+      .update(plays)
+      .set({ updatedAt: new Date("2026-09-03T09:00:00Z") })
+      .where(and(eq(plays.accountId, "anna"), eq(plays.gameDay, TODAY)))
 
     const page = await groups.page({ slug, accountId: "mauro", today: TODAY })
 
     expect(
       page.today.map((row) => [row.place, row.name, row.attemptsLabel])
     ).toEqual([
-      [1, "Anna Bianchi", "4/6"],
       [1, "Mauro Rossi", "4/6"],
+      [2, "Anna Bianchi", "4/6"],
       [3, "Luca Verdi", "—"],
     ])
     expect(page.podiums.map((block) => block.metric)).toEqual([
@@ -260,6 +270,37 @@ describe("lens", () => {
       [1, "Mauro Rossi", 2],
       [2, "Anna Bianchi", 1],
       [3, "Luca Verdi", 0],
+    ])
+  })
+
+  test("today’s podium keeps three and breaks same attempts by finish time", async () => {
+    await account("giulia", "Giulia Neri")
+    const { slug } = await groups.create({ name: "Amici", accountId: "mauro" })
+    const token = await inviteOf(slug, "mauro")
+    await groups.join({ token, accountId: "anna" })
+    await groups.join({ token, accountId: "luca" })
+    await groups.join({ token, accountId: "giulia" })
+    await play("mauro", won(TODAY, 3))
+    await play("anna", won(TODAY, 3))
+    await play("luca", won(TODAY, 4))
+    await play("giulia", won(TODAY, 5))
+    await db
+      .update(plays)
+      .set({ updatedAt: new Date("2026-09-03T08:00:00Z") })
+      .where(and(eq(plays.accountId, "mauro"), eq(plays.gameDay, TODAY)))
+    await db
+      .update(plays)
+      .set({ updatedAt: new Date("2026-09-03T07:00:00Z") })
+      .where(and(eq(plays.accountId, "anna"), eq(plays.gameDay, TODAY)))
+
+    const page = await groups.page({ slug, accountId: "mauro", today: TODAY })
+
+    expect(
+      page.today.map((row) => [row.place, row.name, row.attemptsLabel])
+    ).toEqual([
+      [1, "Anna Bianchi", "3/6"],
+      [2, "Mauro Rossi", "3/6"],
+      [3, "Luca Verdi", "4/6"],
     ])
   })
 
