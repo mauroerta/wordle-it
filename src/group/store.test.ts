@@ -302,6 +302,20 @@ describe("lens", () => {
       [2, "Mauro Rossi", "3/6"],
       [3, "Luca Verdi", "4/6"],
     ])
+
+    const giulia = await groups.page({
+      slug,
+      accountId: "giulia",
+      today: TODAY,
+    })
+    expect(
+      giulia.today.map((row) => [row.place, row.name, row.attemptsLabel])
+    ).toEqual([
+      [1, "Anna Bianchi", "3/6"],
+      [2, "Mauro Rossi", "3/6"],
+      [3, "Luca Verdi", "4/6"],
+      [4, "Giulia Neri", "5/6"],
+    ])
   })
 
   test("Sconfitte does not rank someone who never finished a Play first", async () => {

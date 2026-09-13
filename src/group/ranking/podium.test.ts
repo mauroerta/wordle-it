@@ -50,7 +50,7 @@ function ranks(
 }
 
 describe("podium", () => {
-  test("takes the top 5 for current Streak, sharing place on ties", () => {
+  test("takes the top 3 for current Streak, sharing place on ties", () => {
     expect(
       ranks("currentStreak", [
         {
@@ -74,6 +74,74 @@ describe("podium", () => {
       [2, "Anna Bianchi", 1],
       [2, "Luca Verdi", 1],
     ])
+  })
+
+  test("everyone with the same Streak shares first and all stay on the Podium", () => {
+    expect(
+      ranks("currentStreak", [
+        {
+          accountId: "m",
+          name: "Mauro Rossi",
+          plays: [won("2026-09-03", 2)],
+        },
+        {
+          accountId: "a",
+          name: "Anna Bianchi",
+          plays: [won("2026-09-03", 4)],
+        },
+        {
+          accountId: "l",
+          name: "Luca Verdi",
+          plays: [won("2026-09-03", 1)],
+        },
+        {
+          accountId: "g",
+          name: "Giulia Neri",
+          plays: [won("2026-09-03", 3)],
+        },
+      ])
+    ).toEqual([
+      [1, "Anna Bianchi", 1],
+      [1, "Giulia Neri", 1],
+      [1, "Luca Verdi", 1],
+      [1, "Mauro Rossi", 1],
+    ])
+  })
+
+  test("identical max Streak shares first", () => {
+    expect(
+      ranks("maxStreak", [
+        {
+          accountId: "m",
+          name: "Mauro Rossi",
+          plays: [won("2026-09-01", 2), won("2026-09-02", 2)],
+        },
+        {
+          accountId: "a",
+          name: "Anna Bianchi",
+          plays: [won("2026-09-02", 3), won("2026-09-03", 3)],
+        },
+      ])
+    ).toEqual([
+      [1, "Anna Bianchi", 2],
+      [1, "Mauro Rossi", 2],
+    ])
+  })
+
+  test("a single Member is the whole Podium", () => {
+    expect(
+      ranks("gamesPlayed", [
+        {
+          accountId: "m",
+          name: "Mauro Rossi",
+          plays: [won("2026-09-03", 3)],
+        },
+      ])
+    ).toEqual([[1, "Mauro Rossi", 1]])
+  })
+
+  test("an empty Group has an empty Podium", () => {
+    expect(ranks("gamesPlayed", [])).toEqual([])
   })
 
   test("a loss today puts current Streak at 0", () => {
@@ -234,7 +302,7 @@ describe("podium", () => {
     ])
   })
 
-  test("keeps everyone tied for fifth when the Podium is full", () => {
+  test("keeps everyone tied for third when the Podium is full", () => {
     const members = [
       { accountId: "1", name: "Anna", plays: [won("2026-09-01", 1)] },
       {
@@ -261,22 +329,27 @@ describe("podium", () => {
           won("2026-09-03", 1),
         ],
       },
-      { accountId: "5", name: "Elena", plays: [] },
-      { accountId: "6", name: "Fabio", plays: [] },
-      { accountId: "7", name: "Greta", plays: [] },
+      {
+        accountId: "5",
+        name: "Elena",
+        plays: [won("2026-09-01", 1), won("2026-09-02", 1)],
+      },
+      {
+        accountId: "6",
+        name: "Fabio",
+        plays: [won("2026-09-01", 1), won("2026-09-02", 1)],
+      },
     ]
     expect(ranks("gamesPlayed", members)).toEqual([
       [1, "Dario", 4],
       [2, "Carla", 3],
       [3, "Bruno", 2],
-      [4, "Anna", 1],
-      [5, "Elena", 0],
-      [5, "Fabio", 0],
-      [5, "Greta", 0],
+      [3, "Elena", 2],
+      [3, "Fabio", 2],
     ])
   })
 
-  test("drops Members past fifth when places are distinct", () => {
+  test("drops Members past third when places are distinct", () => {
     const days = [
       "2026-08-28",
       "2026-08-29",
@@ -295,8 +368,36 @@ describe("podium", () => {
       [1, "Player 0", 7],
       [2, "Player 1", 6],
       [3, "Player 2", 5],
-      [4, "Player 3", 4],
-      [5, "Player 4", 3],
+    ])
+  })
+
+  test("appends the viewer when they sit below the podium", () => {
+    const days = [
+      "2026-08-28",
+      "2026-08-29",
+      "2026-08-30",
+      "2026-08-31",
+      "2026-09-01",
+      "2026-09-02",
+      "2026-09-03",
+    ]
+    const members = Array.from({ length: 5 }, (_, i) => ({
+      accountId: String(i),
+      name: `Player ${i}`,
+      plays: days.slice(0, 5 - i).map((gameDay) => won(gameDay, 3)),
+    }))
+    expect(
+      podium({
+        today: "2026-09-03",
+        metric: "gamesPlayed",
+        members,
+        viewerAccountId: "4",
+      }).map((row) => [row.place, row.name, row.value, row.belowPodium])
+    ).toEqual([
+      [1, "Player 0", 5, false],
+      [2, "Player 1", 4, false],
+      [3, "Player 2", 3, false],
+      [5, "Player 4", 1, true],
     ])
   })
 })

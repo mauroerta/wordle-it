@@ -1,6 +1,10 @@
 import type { TodayRow } from "./today"
-import { TODAY_PODIUM_SIZE, todayMedal } from "./today"
-import { formatPodiumValue, podiumLabel } from "./podium"
+import {
+  formatPodiumValue,
+  podiumLabel,
+  PODIUM_SIZE,
+  podiumMedal,
+} from "./podium"
 import type { PodiumMetric, PodiumRow } from "./podium"
 
 export function shareTodayText({
@@ -13,10 +17,9 @@ export function shareTodayText({
   rows: TodayRow[]
 }): string {
   const body = rows
-    .filter((row) => row.place <= TODAY_PODIUM_SIZE)
-    .slice(0, TODAY_PODIUM_SIZE)
+    .filter((row) => !row.belowPodium && row.place <= PODIUM_SIZE)
     .map((row) => {
-      const medal = todayMedal(row.place) ?? `${row.place}.`
+      const medal = podiumMedal(row.place) ?? `${row.place}.`
       return `${medal} ${row.name}  ${row.attemptsLabel}`
     })
     .join("\n")
@@ -33,10 +36,11 @@ export function sharePodiumText({
   rows: PodiumRow[]
 }): string {
   const body = rows
-    .map(
-      (row) =>
-        `${row.place}. ${row.name}  ${formatPodiumValue({ metric, value: row.value })}`
-    )
+    .filter((row) => !row.belowPodium && row.place <= PODIUM_SIZE)
+    .map((row) => {
+      const medal = podiumMedal(row.place) ?? `${row.place}.`
+      return `${medal} ${row.name}  ${formatPodiumValue({ metric, value: row.value })}`
+    })
     .join("\n")
   return `Par🇮🇹le · ${groupName}\n${podiumLabel(metric)}\n\n${body}`
 }

@@ -99,6 +99,65 @@ describe("todayRanking", () => {
       [2, "Mauro Rossi"],
     ])
   })
+
+  test("same attempts and finish time fall back to name order", () => {
+    const rows = todayRanking({
+      members: [
+        {
+          accountId: "m",
+          name: "Mauro Rossi",
+          play: won(2),
+          finishedAt: 1000,
+        },
+        {
+          accountId: "a",
+          name: "Anna Bianchi",
+          play: won(2),
+          finishedAt: 1000,
+        },
+      ],
+    })
+    expect(rows.map((row) => [row.place, row.name])).toEqual([
+      [1, "Anna Bianchi"],
+      [2, "Mauro Rossi"],
+    ])
+  })
+
+  test("same attempts without finish time fall back to name order", () => {
+    const rows = todayRanking({
+      members: [
+        { accountId: "m", name: "Mauro Rossi", play: won(2) },
+        { accountId: "a", name: "Anna Bianchi", play: won(2) },
+      ],
+    })
+    expect(rows.map((row) => [row.place, row.name])).toEqual([
+      [1, "Anna Bianchi"],
+      [2, "Mauro Rossi"],
+    ])
+  })
+
+  test("two losses: earlier finish ranks higher", () => {
+    const rows = todayRanking({
+      members: [
+        {
+          accountId: "m",
+          name: "Mauro Rossi",
+          play: lost(),
+          finishedAt: 5000,
+        },
+        {
+          accountId: "a",
+          name: "Anna Bianchi",
+          play: lost(),
+          finishedAt: 1000,
+        },
+      ],
+    })
+    expect(rows.map((row) => [row.place, row.name, row.bucket])).toEqual([
+      [1, "Anna Bianchi", "lost"],
+      [2, "Mauro Rossi", "lost"],
+    ])
+  })
 })
 
 describe("todayPodium", () => {
@@ -136,5 +195,64 @@ describe("todayPodium", () => {
       [2, "Bruno"],
       [3, "Carla"],
     ])
+  })
+
+  test("appends the viewer when they sit below the podium", () => {
+    const rows = todayPodium({
+      viewerAccountId: "d",
+      members: [
+        {
+          accountId: "a",
+          name: "Anna",
+          play: won(1),
+          finishedAt: 1,
+        },
+        {
+          accountId: "b",
+          name: "Bruno",
+          play: won(2),
+          finishedAt: 2,
+        },
+        {
+          accountId: "c",
+          name: "Carla",
+          play: won(3),
+          finishedAt: 3,
+        },
+        {
+          accountId: "d",
+          name: "Dario",
+          play: won(4),
+          finishedAt: 4,
+        },
+      ],
+    })
+    expect(rows.map((row) => [row.place, row.name, row.belowPodium])).toEqual([
+      [1, "Anna", false],
+      [2, "Bruno", false],
+      [3, "Carla", false],
+      [4, "Dario", true],
+    ])
+  })
+
+  test("does not duplicate the viewer when they are already on the podium", () => {
+    const rows = todayPodium({
+      viewerAccountId: "a",
+      members: [
+        {
+          accountId: "a",
+          name: "Anna",
+          play: won(1),
+          finishedAt: 1,
+        },
+        {
+          accountId: "b",
+          name: "Bruno",
+          play: won(2),
+          finishedAt: 2,
+        },
+      ],
+    })
+    expect(rows.map((row) => row.accountId)).toEqual(["a", "b"])
   })
 })

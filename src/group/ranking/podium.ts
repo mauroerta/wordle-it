@@ -23,6 +23,8 @@ export type PodiumRow = {
   name: string
   place: number
   value: number | undefined
+  /** True only for the viewer row appended below the medal Podium. */
+  belowPodium: boolean
 }
 
 const METRIC_LABELS: Record<PodiumMetric, string> = {
@@ -38,7 +40,42 @@ export function podiumLabel(metric: PodiumMetric): string {
   return METRIC_LABELS[metric]
 }
 
-const PODIUM_SIZE = 5
+export const PODIUM_SIZE = 3
+
+const PODIUM_MEDALS = ["🥇", "🥈", "🥉"] as const
+
+export function podiumMedal(place: number): string | undefined {
+  if (place < 1 || place > PODIUM_SIZE) {
+    return undefined
+  }
+  return PODIUM_MEDALS[place - 1]
+}
+
+/** Podium plus the viewer when they sit below it. Share keeps filtering by place. */
+export function includeViewerOnPodium<
+  T extends { accountId: string; belowPodium?: boolean },
+>({
+  podiumRows,
+  ranked,
+  viewerAccountId,
+}: {
+  podiumRows: T[]
+  ranked: T[]
+  viewerAccountId?: string
+}): Array<T & { belowPodium: boolean }> {
+  const onPodium = podiumRows.map((row) => ({ ...row, belowPodium: false }))
+  if (!viewerAccountId) {
+    return onPodium
+  }
+  if (podiumRows.some((row) => row.accountId === viewerAccountId)) {
+    return onPodium
+  }
+  const viewer = ranked.find((row) => row.accountId === viewerAccountId)
+  if (!viewer) {
+    return onPodium
+  }
+  return [...onPodium, { ...viewer, belowPodium: true }]
+}
 
 export const PODIUM_METRICS: PodiumMetric[] = [
   "currentStreak",
@@ -79,7 +116,7 @@ export function rankMetric({
     }
     const place = i + 1
     for (let k = i; k < j; k++) {
-      rows.push({ ...sorted[k], place })
+      rows.push({ ...sorted[k], place, belowPodium: false })
     }
     i = j
   }
@@ -90,14 +127,20 @@ export function podium({
   members,
   today,
   metric,
+  viewerAccountId,
 }: {
   members: PodiumMember[]
   today: string
   metric: PodiumMetric
+  viewerAccountId?: string
 }): PodiumRow[] {
-  return rankMetric({ members, today, metric }).filter(
-    (row) => row.place <= PODIUM_SIZE
-  )
+  const ranked = rankMetric({ members, today, metric })
+  const top = ranked.filter((row) => row.place <= PODIUM_SIZE)
+  return includeViewerOnPodium({
+    podiumRows: top,
+    ranked,
+    viewerAccountId,
+  })
 }
 
 export function formatPodiumValue({

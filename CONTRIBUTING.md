@@ -21,6 +21,18 @@ pnpm run db:migrate
 
 Fill the WorkOS keys in `.env`. Redirects are listed in `.env.example`.
 
+### Demo Group Members
+
+With Postgres up and at least one Group created in the app:
+
+```bash
+pnpm db:seed                 # only Group, or error listing slugs
+pnpm db:seed par-le-nemici   # specific slug
+```
+
+Adds five synthetic Accounts with Plays (podium, finish-time ties, you below
+3rd). Safe to re-run; refreshes demo Plays. Then refresh the Group page.
+
 ## Commands
 
 See `package.json`. Typical loop: `pnpm run test`, `pnpm run lint`. After

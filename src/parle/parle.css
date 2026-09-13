@@ -1106,6 +1106,12 @@ button.parle-account-action {
   font-weight: 700;
 }
 
+.parle-rank-row[data-below-podium="true"] {
+  margin-top: 6px;
+  padding-top: 12px;
+  border-top: 1px dashed var(--color-tone-4);
+}
+
 .parle-rank-place {
   width: 1.75rem;
   color: var(--color-tone-2);

@@ -1,4 +1,5 @@
 import type { Play } from "../../play/play"
+import { PODIUM_SIZE, includeViewerOnPodium } from "./podium"
 
 export type TodayBucket = "won" | "lost" | "not_played"
 
@@ -9,6 +10,8 @@ export type TodayRow = {
   bucket: TodayBucket
   attemptsLabel: string
   hardMode: boolean
+  /** True only for the viewer row appended below the medal Podium. */
+  belowPodium: boolean
 }
 
 export type TodayMember = {
@@ -17,17 +20,6 @@ export type TodayMember = {
   play: Play | undefined
   /** When the Play finished (won/lost). Earlier wins a same-attempts draw. */
   finishedAt?: number
-}
-
-export const TODAY_PODIUM_SIZE = 3
-
-const TODAY_MEDALS = ["🥇", "🥈", "🥉"] as const
-
-export function todayMedal(place: number): string | undefined {
-  if (place < 1 || place > TODAY_PODIUM_SIZE) {
-    return undefined
-  }
-  return TODAY_MEDALS[place - 1]
 }
 
 function bucketOf(play: Play | undefined): TodayBucket {
@@ -95,16 +87,23 @@ export function todayRanking({
       bucket,
       attemptsLabel: attemptsLabel({ play: member.play }),
       hardMode: member.play?.hardMode === true && bucket !== "not_played",
+      belowPodium: false,
     }
   })
 }
 
 export function todayPodium({
   members,
+  viewerAccountId,
 }: {
   members: TodayMember[]
+  viewerAccountId?: string
 }): TodayRow[] {
-  return todayRanking({ members }).filter(
-    (row) => row.place <= TODAY_PODIUM_SIZE
-  )
+  const ranked = todayRanking({ members })
+  const top = ranked.filter((row) => row.place <= PODIUM_SIZE)
+  return includeViewerOnPodium({
+    podiumRows: top,
+    ranked,
+    viewerAccountId,
+  })
 }

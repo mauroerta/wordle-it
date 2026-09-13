@@ -360,10 +360,13 @@ export function createGroups({ db }: { db: Db }) {
         (member) => member.accountId === accountId && member.role === "owner"
       ),
       viewerAccountId: accountId,
-      today: todayPodium({ members: todayMembers({ members, today }) }),
+      today: todayPodium({
+        members: todayMembers({ members, today }),
+        viewerAccountId: accountId,
+      }),
       podiums: PODIUM_METRICS.map((metric) => ({
         metric,
-        rows: podium({ members, today, metric }),
+        rows: podium({ members, today, metric, viewerAccountId: accountId }),
       })),
       members: members
         .map((member) => ({

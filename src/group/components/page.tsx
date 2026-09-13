@@ -23,10 +23,9 @@ import {
   renameGroup,
   rotateGroupInvite,
 } from "../mutations/groups"
-import { formatPodiumValue, podiumLabel } from "../ranking/podium"
+import { formatPodiumValue, podiumLabel, podiumMedal } from "../ranking/podium"
 import type { PodiumMetric } from "../ranking/podium"
 import { shareTodayText, sharePodiumText } from "../ranking/share"
-import { todayMedal } from "../ranking/today"
 import type { GroupPage } from "../store"
 import { PageChrome } from "../../chrome/page-chrome"
 import { ConfirmDialog } from "./confirm-dialog"
@@ -232,9 +231,10 @@ export function GroupDetailPage({
               data-self={
                 row.accountId === page.viewerAccountId ? "true" : undefined
               }
+              data-below-podium={row.belowPodium ? "true" : undefined}
             >
               <span className="parle-rank-place" aria-label={`${row.place}°`}>
-                {todayMedal(row.place) ?? `${row.place}°`}
+                {podiumMedal(row.place) ?? `${row.place}°`}
               </span>
               <span className="parle-rank-name">{row.name}</span>
               <span className="parle-rank-value">{row.attemptsLabel}</span>
@@ -265,8 +265,14 @@ export function GroupDetailPage({
                   data-self={
                     row.accountId === page.viewerAccountId ? "true" : undefined
                   }
+                  data-below-podium={row.belowPodium ? "true" : undefined}
                 >
-                  <span className="parle-rank-place">{row.place}°</span>
+                  <span
+                    className="parle-rank-place"
+                    aria-label={`${row.place}°`}
+                  >
+                    {podiumMedal(row.place) ?? `${row.place}°`}
+                  </span>
                   <span className="parle-rank-name">{row.name}</span>
                   <span className="parle-rank-value">
                     {formatPodiumValue({

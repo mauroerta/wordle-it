@@ -81,9 +81,9 @@ The secret link that lets an Account join a Group. One link per Group. Kick does
 _Avoid_: invite code (as a second official name), referral
 
 **Today’s ranking**:
-Members ordered for one Game Day: wins by fewer attempts, then who finished first on a draw, then losses as X, then not played (in progress counts as not played). Places are unique. The Group page and share show only the first three (podium); teasers still use the full ranking for the viewer’s place. Computed from Plays. Visible without having played today. Share uses medal emojis for the podium. No emoji grids of guesses.
+Members ordered for one Game Day: wins by fewer attempts, then who finished first on a draw, then losses as X, then not played (in progress counts as not played). Places are unique. The Group page shows the first three (podium) and always the viewer’s row when they sit below it; share stays the medal podium only. Teasers still use the full ranking for the viewer’s place. Computed from Plays. Visible without having played today. Share uses medal emojis for the podium. No emoji grids of guesses.
 _Avoid_: leaderboard, scoreboard, Oggi (as the English term)
 
 **Podium**:
-The top five places for one Statistics view (current Streak, max Streak, average attempts with a loss as 7, win percentage, games played, losses). Ties share a place, so a tied fifth shows everyone tied. Fewer than five Members: show everyone. A Member with no finished Play has no average and no losses; they sit last, shown as —.
+The top three places for one Statistics view (current Streak, max Streak, average attempts with a loss as 7, win percentage, games played, losses). Ties share a place, so a tied third shows everyone tied. Fewer than three Members: show everyone. The Group page always adds the viewer’s row when they sit below the podium; share stays the medal podium only. Medal emojis for places 1–3. A Member with no finished Play has no average and no losses; they sit last, shown as —.
 _Avoid_: chart (as the name of the ranking), leaderboard
