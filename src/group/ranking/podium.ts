@@ -208,6 +208,6 @@ function compareMetric({
   if (b === undefined) {
     return -1
   }
-  const lowerIsBetter = metric === "average" || metric === "losses"
+  const lowerIsBetter = metric === "average"
   return lowerIsBetter ? a - b : b - a
 }

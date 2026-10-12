@@ -1,5 +1,5 @@
 import { useState } from "react"
-import type { FormEvent } from "react"
+import type { SubmitEvent } from "react"
 import { useRouter } from "@tanstack/react-router"
 import { InfoIcon } from "lucide-react"
 import { Alert, AlertDescription } from "@/components/ui/alert"
@@ -123,7 +123,7 @@ export function GroupDetailPage({
     })
   }
 
-  function onRename(event: FormEvent) {
+  function onRename(event: SubmitEvent) {
     event.preventDefault()
     return attempt(async () => {
       await renameGroup({ data: { slug: page.slug, name } })

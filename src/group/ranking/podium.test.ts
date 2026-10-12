@@ -268,15 +268,15 @@ describe("podium", () => {
     ])
   })
 
-  test("ranks losses lower better", () => {
+  test("ranks losses higher better", () => {
     expect(
       ranks("losses", [
         { accountId: "m", name: "Mauro Rossi", plays: [won("2026-09-03", 3)] },
         { accountId: "a", name: "Anna Bianchi", plays: [lost("2026-09-03")] },
       ])
     ).toEqual([
-      [1, "Mauro Rossi", 0],
-      [2, "Anna Bianchi", 1],
+      [1, "Anna Bianchi", 1],
+      [2, "Mauro Rossi", 0],
     ])
   })
 
