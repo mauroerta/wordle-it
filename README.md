@@ -1,7 +1,7 @@
 
 # Par🇮🇹le
 
-Gioca su [parole.mauroerta.com](https://parole.mauroerta.com).
+Gioca su [parole.mauroerta.me](https://parole.mauroerta.me).
 
 Par🇮🇹le è la versione italiana di Wordle, originariamente creata da
 [Pietro Peterlongo](https://github.com/pietroppeter/wordle-it).
