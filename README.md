@@ -1,6 +1,6 @@
 # Par🇮🇹le
 
-Gioca su [parole.up.railway.app](https://parole.mauroerta.com).
+Gioca su [parole.mauroerta.com](https://parole.mauroerta.com).
 
 Par🇮🇹le è la versione italiana di Wordle creata da
 [Pietro Peterlongo](https://github.com/pietroppeter/wordle-it).
